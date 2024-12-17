@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body style="background-color: #E9D8A6; display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">Join Us!</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="text-red-500">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form action="" method="post" novalidate class="needs-validation">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="id_username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="id_username" name="username" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your username" value="{{ form.username.value|default:'' }}">
+                {% if form.username.errors %}
+                    <div class="text-red-500">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-4">
+                <label for="id_email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="text" id="id_email" name="email" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your email" value="{{ form.email.value|default:'' }}">
+                {% if form.email.errors %}
+                    <div class="text-red-500">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-4">
+                <label for="id_password1" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="id_password1" name="password1" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your password">
+                {% if form.password1.errors %}
+                    <div class="text-red-500">{{ form.password1.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-4">
+                <label for="id_password2" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" id="id_password2" name="password2" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Confirm your password">
+                {% if form.password2.errors %}
+                    <div class="text-red-500">{{ form.password2.errors }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Sign Up</button>
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Already have an account? <a href="{% url 'signin' %}" class="text-blue-500 hover:underline">Sign In</a>
+        </p>
+    </div>
+</body>
+</html>

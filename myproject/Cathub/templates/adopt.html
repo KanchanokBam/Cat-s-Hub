@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adopt Cat!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-yellow-50 text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-red-600 text-white flex justify-between items-center px-6 py-4">
+        <div class="flex space-x-4">
+            <a href="#" class="text-lg font-semibold hover:text-gray-200">ADOPT</a>
+            <a href="{% url 'match' %}" class="text-lg font-semibold hover:text-gray-200">MATCH</a>
+            <a href="#" class="text-lg font-semibold hover:text-gray-200">Statistics</a>
+            <a href="#" class="text-lg font-semibold hover:text-gray-200">TEST</a>
+        </div>
+        <!-- Log Out Button -->
+        <div>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="bg-white text-red-600 px-4 py-2 rounded hover:bg-gray-200">
+                    Log Out
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Heading -->
+    <h1 class="text-4xl font-bold text-center text-red-600 mt-8">ADOPT CAT!</h1>
+
+    <!-- Cat Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-8 py-12">
+        <!-- Cat Card 1 -->
+        <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+            <div class="w-full h-48 bg-gray-300 rounded mb-4"></div>
+            <h3 class="text-lg font-semibold">Niya</h3>
+        </div>
+
+        <!-- Cat Card 2 -->
+        <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+            <div class="w-full h-48 bg-gray-300 rounded mb-4"></div>
+            <h3 class="text-lg font-semibold">Paeya</h3>
+        </div>
+
+        <!-- Cat Card 3 -->
+        <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+            <div class="w-full h-48 bg-gray-300 rounded mb-4"></div>
+            <h3 class="text-lg font-semibold">Kaning</h3>
+        </div>
+
+        <!-- Cat Card 4 -->
+        <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+            <div class="w-full h-48 bg-gray-300 rounded mb-4"></div>
+            <h3 class="text-lg font-semibold">Cat 4</h3>
+        </div>
+
+        <!-- Cat Card 5 -->
+        <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+            <div class="w-full h-48 bg-gray-300 rounded mb-4"></div>
+            <h3 class="text-lg font-semibold">Cat 5</h3>
+        </div>
+
+        <!-- Cat Card 6 -->
+        <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+            <div class="w-full h-48 bg-gray-300 rounded mb-4"></div>
+            <h3 class="text-lg font-semibold">Cat 6</h3>
+        </div>
+    </div>
+
+</body>
+</html>
