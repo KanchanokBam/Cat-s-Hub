@@ -1,78 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat's Hub</title>
+    <title>Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-yellow-100 min-h-screen">
 
-    <!-- Header Section -->
-    <header class="bg-yellow-200 py-6 relative">
-        <div class="text-center">
-            <h1 class="text-orange-500 text-3xl font-bold">Welcome to CAT'S HUB</h1>
-        </div>
-        <!-- Logout Button at Top Right Corner -->
-        <div class="absolute top-4 right-4">
-            <form method="POST" action="{% url 'logout' %}" id="logout-form">
-                {% csrf_token %}
-                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition" onclick="return confirmLogout();">
-                    Logout
-                </button>
-            </form>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <section class="px-6 py-6 bg-pink-50">
-        <a href="{% url 'profile' %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
-            Profile
+    <nav class="bg-red-600 text-white px-6 py-3 flex items-center justify-between shadow-md">
+        <!-- Left Menu -->
+        <a href="{% url 'adopt' %}" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">ADOPT</a>
+        <a href="{% url 'match' %}" class="text-lg font-semibold hover:text-yellow-300 transition">MATCH</a>
+        <!-- Right Menu -->
+        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">Statistics</a>
+        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">TEST</a>
+        <!-- Profile Section -->
+        <a href="{% url 'profile' %}" class="flex items-center hover:text-yellow-300 transition">
+            <img src="https://via.placeholder.com/30" alt="User Profile" class="w-8 h-8 rounded-full">
+            <span class="ml-1 font-semibold">{{ user.username }}</span>
         </a>
-        <div class="flex justify-between items-center">
-            <!-- Title -->
-            <h2 class="text-orange-500 text-3xl font-bold">Adopt Cat</h2>
-            <!-- Next Button -->
-            <button id="nextBtn" class="w-12 h-12 bg-white text-orange-500 rounded-full shadow-md flex justify-center items-center hover:bg-orange-100 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
-        <!-- Scrollable Section -->
-        <div id="scrollContainer" class="overflow-x-auto flex space-x-4 mt-6 pb-4">
-            <!-- Card 1 -->
-            <div class="min-w-[300px] rounded-xl bg-white shadow-md overflow-hidden">
-                <img src="https://via.placeholder.com/300x200" alt="Cat 1" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="font-bold text-gray-800">Kyla</h3>
-                </div>
-            </div>
-            <!-- Card 2 -->
-            <div class="min-w-[300px] rounded-xl bg-white shadow-md overflow-hidden">
-                <img src="https://via.placeholder.com/300x200" alt="Cat 2" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="font-bold text-gray-800">Miky</h3>
-                </div>
-            </div>
-        </div>
-    </section>
+    </nav>
     
-    <!-- Footer Section -->
-    <footer class="bg-red-700 text-white py-6 mt-12">
-        <div class="text-center space-y-2">
-            <p>Contact Us: CatsHub@gmail.com</p>
-            <p>University: Ubonratchathani University</p>
-            <p>Phone: +66 956214680</p>
-        </div>
-    </footer>
-
-    <!-- Confirmation JavaScript -->
-    <script>
-        function confirmLogout() {
-            return confirm("Are you sure you want to logout?");
-        }
-    </script>
+    <!-- Main Content -->
+    <div class="container mx-auto mt-10 text-center">
+        <h1 class="text-4xl font-bold text-gray-800">Welcome, {{ user.username }}!</h1>
+        <p class="text-gray-600 mt-4">This is your Home Page.</p>
+    </div>
 
 </body>
 </html>
