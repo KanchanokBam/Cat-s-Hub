@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-yellow-100 min-h-screen">
+
+    <nav class="bg-red-600 text-white px-6 py-3 flex items-center justify-between shadow-md">
+        <!-- Left Menu -->
+        <a href="{% url 'adopt' %}" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">ADOPT</a>
+        <a href="{% url 'match' %}" class="text-lg font-semibold hover:text-yellow-300 transition">MATCH</a>
+        <!-- Right Menu -->
+        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">Statistics</a>
+        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">TEST</a>
+        <!-- Profile Section -->
+        <a href="{% url 'profile' %}" class="flex items-center hover:text-yellow-300 transition">
+            <img src="{{ profile.get_profile_picture }}" alt="User Profile" class="w-8 h-8 rounded-full">
+            <span class="ml-1 font-semibold">{{ user.username }}</span>
+        </a>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container mx-auto mt-10 text-center">
+        <h1 class="text-4xl font-bold text-gray-800">Welcome, {{ user.username }}!</h1>
+        <p class="text-gray-600 mt-4">This is your Home Page.</p>
+    </div>
+
+</body>
+</html>
