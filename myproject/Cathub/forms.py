@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Cat
+from .models import Cat ,UserProfile
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, required=True, help_text='Required. Provide a valid email address.')
@@ -20,9 +20,11 @@ class SignInForm(AuthenticationForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
 class CatPostForm(forms.ModelForm):
+    image = forms.ImageField(required=False)  # ฟิลด์สำหรับอัปโหลดรูปภาพ
+
     class Meta:
         model = Cat
-        fields = ['name', 'age', 'breed', 'color']
+        fields = ['name', 'age', 'breed', 'color', 'image']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w-full border border-gray-300 rounded px-4 py-2', 'placeholder': 'Name'}),
             'age': forms.NumberInput(attrs={'class': 'w-full border border-gray-300 rounded px-4 py-2', 'placeholder': 'Age'}),
@@ -44,3 +46,11 @@ class BirthDateForm(forms.Form):
         label="Year", min_value=1900, max_value=2024, 
         widget=forms.NumberInput(attrs={'placeholder': 'Year', 'class': 'border rounded px-3 py-2 w-full'})
     )
+
+
+class ProfilePictureUpdateForm(forms.ModelForm):
+    profile_picture = forms.ImageField(required=False)  # รองรับการอัปโหลดไฟล์ภาพ
+
+    class Meta:
+        model = UserProfile
+        fields = []  # ไม่ต้องระบุ fields อื่น เพราะจะจัดการผ่าน Base64

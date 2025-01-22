@@ -13,14 +13,14 @@
             <a href="{% url 'home' %}" class="text-lg font-bold">Back to Home</a>
         </nav>
         <!-- Left Menu -->
-        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">ADOPT</a>
-        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition">MATCH</a>
+        <a href="{% url 'adopt' %}" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">ADOPT</a>
+        <a href="{% url 'match' %}" class="text-lg font-semibold hover:text-yellow-300 transition">MATCH</a>
         <!-- Right Menu -->
         <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">Statistics</a>
         <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">TEST</a>
         <!-- Profile Section -->
         <a href="{% url 'profile' %}" class="flex items-center hover:text-yellow-300 transition">
-            <img src="https://via.placeholder.com/30" alt="User Profile" class="w-8 h-8 rounded-full">
+            <img src="{{ profile.get_profile_picture }}" alt="User Profile" class="w-8 h-8 rounded-full">
             <span class="ml-1 font-semibold">{{ user.username }}</span>
         </a>
     </nav>

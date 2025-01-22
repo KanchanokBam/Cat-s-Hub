@@ -1,0 +1,39 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    {% tailwind_css %}
+</head>
+<body style="background-color: #E9D8A6; display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">CatHub!</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your username">
+                {% if form.username.errors %}
+                    <div class="text-red-500">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your password">
+                {% if form.password.errors %}
+                    <div class="text-red-500">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Sign in</button>
+            {% if form.non_field_errors %}
+                <div class="text-red-500 mt-2">{{ form.non_field_errors }}</div>
+            {% endif %}
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Don't have an account? <a href="/signup" class="text-blue-500 hover:underline">Sign Up</a>
+        </p>
+    </div>
+</body>
+</html>

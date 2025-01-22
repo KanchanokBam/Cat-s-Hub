@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-yellow-50 text-gray-800">
+
+    <!-- Header -->
+    <nav class="bg-red-600 text-white px-6 py-3 flex justify-between items-center">
+        <a href="{% url 'adopt' %}" class="text-lg font-bold">Back to Adopt</a>
+        <h1 class="text-2xl font-bold">{{ user.username }}'s Profile</h1>
+    </nav>
+
+    <!-- Profile Section -->
+    <div class="flex mt-8 mx-8">
+        <!-- User Information -->
+        <div class="w-1/4 bg-white rounded-lg shadow-lg p-6 text-center">
+            <img src="https://via.placeholder.com/150" alt="{{ user.username }}" class="w-32 h-32 rounded-full mx-auto mb-4">
+            <h2 class="text-2xl font-bold">{{ user.username }}</h2>
+            <p class="text-gray-600">Email: {{ user.email }}</p>
+        </div>
+
+        <!-- Catalog Section -->
+        <div class="w-3/4 ml-8">
+            <h2 class="text-2xl font-bold mb-4">Catalog</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for cat in cats %}
+                    <div class="bg-white shadow-lg rounded-lg p-4 flex items-center space-x-4">
+                        <img src="https://via.placeholder.com/80" alt="{{ cat.name }}" class="w-20 h-20 rounded-lg">
+                        <div>
+                            <p><strong>Name:</strong> {{ cat.name }}</p>
+                            <p><strong>Age:</strong> {{ cat.age }} month</p>
+                            <p><strong>Breed:</strong> {{ cat.breed|default:"-" }}</p>
+                            <p><strong>Color:</strong> {{ cat.color|default:"-" }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No cats posted yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

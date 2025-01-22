@@ -22,7 +22,7 @@
         <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">TEST</a>
         <!-- Profile Section -->
         <a href="{% url 'profile' %}" class="flex items-center hover:text-yellow-300 transition">
-            <img src="https://via.placeholder.com/30" alt="User Profile" class="w-8 h-8 rounded-full">
+            <img src="{{ profile.get_profile_picture }}" alt="User Profile" class="w-8 h-8 rounded-full">
             <span class="ml-1 font-semibold">{{ user.username }}</span>
         </a>
     </nav>
@@ -35,7 +35,13 @@
         {% for cat in cats %}
             <!-- Cat Card -->
             <a href="{% url 'cat_detail' cat.id %}" class="block bg-white shadow-lg rounded-lg p-6 text-center hover:shadow-2xl transition">
-                <div class="w-full h-48 bg-gray-300 rounded mb-4"></div>
+                <div class="w-full h-48 bg-gray-300 rounded mb-4 overflow-hidden">
+                    {% if cat.get_image_base64 %}
+                        <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                    {% endif %}
+                </div>
                 <h3 class="text-lg font-semibold">{{ cat.name }}</h3>
                 <p class="text-gray-600">Age: {{ cat.age }}</p>
                 <p class="text-gray-600">Breed: {{ cat.breed|default:"-" }}</p>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CatHub!{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="bg-green-500">
+        <nav class="bg-white shadow">
+            <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex-1 flex items-center">
+                        <h1 style="color: #AE2012;" class="text-2xl font-bold">CatHub!</h1>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-gray-700 text-white py-4">
+        <p class="text-center">&copy; CatHub.</p>
+    </footer>
+
+</body>
+</html>

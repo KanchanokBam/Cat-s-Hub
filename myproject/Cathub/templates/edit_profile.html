@@ -8,22 +8,34 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <!-- Card Container -->
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <!-- Heading -->
         <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">Edit Profile</h2>
 
-        <!-- Success/Error Messages -->
         {% if messages %}
             {% for message in messages %}
                 <div class="text-green-500 mb-4 text-center">{{ message }}</div>
             {% endfor %}
         {% endif %}
 
-        <!-- Form Section -->
-        <form method="POST" class="space-y-4">
+        <!-- Profile Picture -->
+        {% if profile.get_profile_picture %}
+            <div class="mb-4 text-center">
+                <img src="{{ profile.get_profile_picture }}" 
+                     alt="Profile Picture" class="w-24 h-24 rounded-full mx-auto shadow-lg">
+            </div>
+        {% else %}
+            <div class="mb-4 text-center">
+                <div class="w-24 h-24 rounded-full bg-gray-300 mx-auto flex items-center justify-center shadow-lg">
+                    <span class="text-gray-500">No Image</span>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
             {% csrf_token %}
-            <!-- Username Input -->
+
+            <!-- Username -->
             <div>
                 <label for="id_username" class="block text-sm font-medium text-gray-700">New Username</label>
                 <input type="text" id="id_username" name="username" 
@@ -34,14 +46,19 @@
                 {% endif %}
             </div>
 
-            <!-- Submit Button -->
+            <!-- Upload Profile Picture -->
+            <div>
+                <label for="id_profile_picture" class="block text-sm font-medium text-gray-700">Upload Profile Picture</label>
+                <input type="file" id="id_profile_picture" name="profile_picture" 
+                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
             <button type="submit" 
                     class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">
                 Save Changes
             </button>
         </form>
 
-        <!-- Back to Profile -->
         <a href="{% url 'profile' %}" 
            class="block text-center text-gray-500 mt-4 hover:text-blue-500 transition duration-200">
             Back to Profile
