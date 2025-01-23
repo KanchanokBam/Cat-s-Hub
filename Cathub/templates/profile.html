@@ -14,7 +14,7 @@
         <a href="{% url 'home' %}" class="text-lg font-bold">Back to Home</a>
         <a href="{% url 'adopt' %}" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">ADOPT</a>
         <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition">MATCH</a>
-        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">Statistics</a>
+        <a href="{% url 'statistics' %}" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">Statistics</a>
         <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">TEST</a>
         <a href="{% url 'profile' %}" class="flex items-center hover:text-yellow-300 transition">
             <img src="{{ profile.get_profile_picture }}" alt="User Profile" class="w-8 h-8 rounded-full">
@@ -54,30 +54,49 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for cat in cats %}
                 <div class="bg-white rounded-lg shadow-lg p-4 flex space-x-4 items-center">
+                    <!-- Cat Image -->
                     <div class="w-20 h-20 bg-gray-300 rounded-lg flex-shrink-0">
                         {% if cat.get_image_base64 %}
-                        <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                        <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full rounded-lg object-cover">
                         {% else %}
-                            <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                            <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full rounded-lg object-cover">
                         {% endif %}
                     </div>
+                    <!-- Cat Details -->
                     <div class="flex-1">
                         <p><strong>Name:</strong> {{ cat.name }}</p>
                         <p><strong>Age:</strong> {{ cat.age }} month</p>
                         <p><strong>Breed:</strong> {{ cat.breed|default:"-" }}</p>
                         <p><strong>Color:</strong> {{ cat.color|default:"-" }}</p>
                     </div>
-                    <!-- Edit Button -->
-                    <a href="{% url 'edit_cat' cat.id %}" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">
-                        Edit
-                    </a>
-                    <!-- Delete Button -->
-                    <form action="{% url 'delete_cat' cat.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
-                        {% csrf_token %}
-                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
-                            Delete
-                        </button>
-                    </form>
+                    <!-- Buttons Section -->
+                    <div class="flex space-x-2">
+                        <!-- Edit Button -->
+                        <a href="{% url 'edit_cat' cat.id %}" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">
+                            Edit
+                        </a>
+                        <!-- Delete Button -->
+                        <form action="{% url 'delete_cat' cat.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
+                                Delete
+                            </button>
+                        </form>
+                        <!-- Toggle Adopted Status -->
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="cat_id" value="{{ cat.id }}">
+                            <button type="submit" 
+                                    class="px-4 py-2 text-white rounded-lg transition 
+                                    {% if cat.is_adopted %} bg-green-500 hover:bg-green-600 {% else %} bg-red-500 hover:bg-red-600 {% endif %}">
+                                {% if cat.is_adopted %}
+                                    Adopted
+                                {% else %}
+                                    Mark as Adopted
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
                 </div>
                 {% empty %}
                     <p class="text-gray-500 col-span-2">No cats posted yet.</p>

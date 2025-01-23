@@ -21,15 +21,46 @@ class SignInForm(AuthenticationForm):
 
 class CatPostForm(forms.ModelForm):
     image = forms.ImageField(required=False)  # ฟิลด์สำหรับอัปโหลดรูปภาพ
+    
+    # เพิ่มคำว่า "กรุณาเลือก" เป็น default option
+    PERSONALITY_CHOICES = [
+        ('', 'กรุณาเลือก'),  # ตัวเลือกแรกที่แสดง "กรุณาเลือก" (ค่าจะเป็น empty string)
+        ('playful', 'Playful'),
+        ('calm', 'Calm'),
+        ('friendly', 'Friendly'),
+        ('independent', 'Independent'),
+        ('curious', 'Curious'),
+    ]
+    
+    personality = forms.ChoiceField(
+        choices=PERSONALITY_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'w-full border border-gray-300 rounded px-4 py-2'
+        }),
+        required=False,  # ไม่บังคับให้เลือก
+        label="Personality"
+    )
 
     class Meta:
         model = Cat
-        fields = ['name', 'age', 'breed', 'color', 'image']
+        fields = ['name', 'age', 'breed', 'color', 'personality', 'image']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'w-full border border-gray-300 rounded px-4 py-2', 'placeholder': 'Name'}),
-            'age': forms.NumberInput(attrs={'class': 'w-full border border-gray-300 rounded px-4 py-2', 'placeholder': 'Age'}),
-            'breed': forms.TextInput(attrs={'class': 'w-full border border-gray-300 rounded px-4 py-2', 'placeholder': 'Breed'}),
-            'color': forms.TextInput(attrs={'class': 'w-full border border-gray-300 rounded px-4 py-2', 'placeholder': 'Color'}),
+            'name': forms.TextInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-4 py-2', 
+                'placeholder': 'Name'
+            }),
+            'age': forms.NumberInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-4 py-2', 
+                'placeholder': 'Age'
+            }),
+            'breed': forms.TextInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-4 py-2', 
+                'placeholder': 'Breed'
+            }),
+            'color': forms.TextInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-4 py-2', 
+                'placeholder': 'Color'
+            }),
         }
 
 
@@ -46,8 +77,6 @@ class BirthDateForm(forms.Form):
         label="Year", min_value=1900, max_value=2024, 
         widget=forms.NumberInput(attrs={'placeholder': 'Year', 'class': 'border rounded px-3 py-2 w-full'})
     )
-
-
 class ProfilePictureUpdateForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False)  # รองรับการอัปโหลดไฟล์ภาพ
 

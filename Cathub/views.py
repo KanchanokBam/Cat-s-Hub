@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
+from django.db.models import Count
+from datetime import date
 from .models import Cat, User,UserProfile
 from .forms import SignUpForm, CatPostForm, UsernameUpdateForm, BirthDateForm ,ProfilePictureUpdateForm
 
@@ -60,9 +62,21 @@ def profile_view(request):
  
 @login_required
 def profile_page(request):
-    profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
-    cats = Cat.objects.filter(user=request.user)  # ดึงโพสต์ที่ผู้ใช้งานปัจจุบันโพสต์
+    profile = UserProfile.objects.get(user=request.user)
+    cats = Cat.objects.filter(user=request.user)
+
+    # สลับสถานะการรับเลี้ยงเมื่อกดปุ่ม
+    if request.method == 'POST':
+        cat_id = request.POST.get('cat_id')
+        cat = get_object_or_404(Cat, id=cat_id, user=request.user)
+        cat.is_adopted = not cat.is_adopted  # สลับสถานะ
+        cat.adopted_date = date.today() if cat.is_adopted else None
+        cat.save()
+        return redirect('profile')
+
     return render(request, 'profile.html', {'profile': profile, 'cats': cats, 'user': request.user})
+
+
 
 
 @login_required 
@@ -79,21 +93,30 @@ def cat_detail(request, cat_id):
 @login_required
 def post_cat(request):
     profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
+    
     if request.method == 'POST':
         form = CatPostForm(request.POST, request.FILES)
         if form.is_valid():
             cat = form.save(commit=False)
             cat.user = request.user  # เชื่อมผู้โพส
+            
+            # ตรวจสอบหาก personality ไม่ได้เลือก
+            if cat.personality == '':
+                cat.personality = None
+            
+            # จัดการไฟล์ภาพที่อัปโหลด
             image = request.FILES.get('image')  # ดึงไฟล์ภาพจากฟอร์ม
             if image:
                 cat.save_image(image)  # แปลงและบันทึกเป็น Base64
             else:
-                cat.save()
+                cat.save()  # บันทึกแมวลงฐานข้อมูล
+            
             return redirect('adopt')  # กลับไปยังหน้าหลัก
     else:
         form = CatPostForm()
 
-    return render(request, 'post.html', {'form': form,'profile': profile})
+    return render(request, 'post.html', {'form': form, 'profile': profile})
+
 
 
 @login_required
@@ -165,3 +188,10 @@ def edit_cat(request, cat_id):
         form = CatPostForm(instance=cat)
 
     return render(request, 'edit_cat.html', {'form': form, 'cat': cat})
+
+@login_required
+def statistics(request):
+    profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
+    today = date.today()
+    daily_adoption = Cat.objects.filter(adopted_date=today).count()
+    return render(request, 'statistics.html', {'daily_adoption': daily_adoption, 'profile': profile})

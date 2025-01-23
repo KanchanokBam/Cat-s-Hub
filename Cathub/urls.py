@@ -20,6 +20,6 @@ urlpatterns = [
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
     path('cat/delete/<int:cat_id>/', views.delete_cat, name='delete_cat'),
     path('edit_cat/<int:cat_id>/', views.edit_cat, name='edit_cat'),
-
+    path('statistics/', views.statistics, name='statistics'),
 
 ]

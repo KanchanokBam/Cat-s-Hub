@@ -27,12 +27,22 @@
 
             <!-- Details Section -->
             <div class="w-1/2">
-                <h2 class="text-2xl font-bold mb-2">{{ cat.user.username }}</h2>
-                <p class="text-gray-600 mb-1"><strong>Name:</strong> {{ cat.name }}</p> <!-- แสดงชื่อผู้โพสต์ -->
+                <h2 class="text-2xl font-bold mb-2">{{ cat.name }}</h2>
                 <p class="text-gray-600 mb-1"><strong>Age:</strong> {{ cat.age }}</p>
                 <p class="text-gray-600 mb-1"><strong>Breed:</strong> {{ cat.breed|default:"-" }}</p>
                 <p class="text-gray-600 mb-1"><strong>Color:</strong> {{ cat.color|default:"-" }}</p>
+                <p class="text-gray-600 mb-1"><strong>Personality:</strong> {{ cat.personality|default:"Not specified" }}</p>
+                <p class="text-gray-600 mb-1">
+                    <strong>Status:</strong>
+                    {% if cat.is_adopted %}
+                        <span class="text-green-500">Adopted on {{ cat.adopted_date }}</span>
+                    {% else %}
+                        <span class="text-red-500">Available for Adoption</span>
+                    {% endif %}
+                </p>
                 
+            
+            
                 <!-- Contact Button -->
                 <a href="{% url 'user_profile' cat.user.username %}" 
                 class="mt-8 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition inline-block">
