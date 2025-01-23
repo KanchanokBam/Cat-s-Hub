@@ -27,12 +27,12 @@ class Cat(models.Model):
     name = models.CharField(max_length=100)
     age = models.IntegerField()
     breed = models.CharField(max_length=100, blank=True, null=True)
-    color = models.CharField(max_length=50, blank=True, null=True)  # สีของแมว
-    personality = models.TextField(blank=True, null=True)  # ลักษณะนิสัยของแมว
+    color = models.CharField(max_length=50, blank=True, null=True)
+    personality = models.TextField(blank=True, null=True)
     image_base64 = models.TextField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cats')
-    is_adopted = models.BooleanField(default=False)  # สถานะการรับเลี้ยง
-    adopted_date = models.DateField(blank=True, null=True)  # วันที่รับเลี้ยง
+    is_adopted = models.BooleanField(default=False)
+    adopted_date = models.DateField(blank=True, null=True)
 
     def save_image(self, image):
         if image:

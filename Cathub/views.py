@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.db.models import Count
+from django.http import JsonResponse, HttpResponseBadRequest
 from datetime import date
 from .models import Cat, User,UserProfile
 from .forms import SignUpForm, CatPostForm, UsernameUpdateForm, BirthDateForm ,ProfilePictureUpdateForm
@@ -195,3 +196,83 @@ def statistics(request):
     today = date.today()
     daily_adoption = Cat.objects.filter(adopted_date=today).count()
     return render(request, 'statistics.html', {'daily_adoption': daily_adoption, 'profile': profile})
+
+
+@login_required
+def find_cat(request):
+    if request.method == 'POST':
+        # รับค่าจากผู้ใช้
+        personality = request.POST.get('personality')
+        age = request.POST.get('age')
+        breed = request.POST.get('breed')
+        color = request.POST.get('color')
+
+        # ดึงแมวทั้งหมดจากฐานข้อมูล
+        cats = Cat.objects.all()
+
+        # คำนวณคะแนน (scoring)
+        scored_cats = []
+        for cat in cats:
+            score = 0
+
+            # เปรียบเทียบ personality
+            if personality and personality.lower() in (cat.personality or '').lower():
+                score += 1
+
+            # เปรียบเทียบอายุ
+            if age:
+                if age == 'kitten' and cat.age < 1:
+                    score += 1
+                elif age == 'adult' and 1 <= cat.age < 7:
+                    score += 1
+                elif age == 'senior' and cat.age >= 7:
+                    score += 1
+
+            # เปรียบเทียบ breed
+            if breed and breed.lower() in (cat.breed or '').lower():
+                score += 1
+
+            # เปรียบเทียบ color
+            if color and color.lower() in (cat.color or '').lower():
+                score += 1
+
+            # เพิ่มแมวพร้อมคะแนนเข้าไปในรายการ
+            scored_cats.append({
+                'cat': cat,
+                'score': score
+            })
+
+        # กรองแมวที่มีคะแนนตั้งแต่ 3 ข้อขึ้นไป
+        scored_cats = [entry for entry in scored_cats if entry['score'] >= 3]
+
+        # จัดลำดับตามคะแนน (เรียงจากคะแนนสูงสุด -> ต่ำสุด)
+        scored_cats = sorted(scored_cats, key=lambda x: x['score'], reverse=True)
+
+        # เตรียมข้อมูลสำหรับ JSON Response
+        cat_list = [
+            {
+                'id': entry['cat'].id,  # ต้องมี 'id' อยู่ใน JSON
+                'name': entry['cat'].name,
+                'age': entry['cat'].age,
+                'breed': entry['cat'].breed or 'Unknown',
+                'color': entry['cat'].color or 'Unknown',
+                'image_url': entry['cat'].get_image_base64(),
+            }
+            for entry in scored_cats
+        ]
+
+        return JsonResponse({'cats': cat_list})
+
+    elif request.method == 'GET':
+        # ดึงข้อมูล breed และ color เพื่อนำไปแสดงใน Dropdown
+        breeds = Cat.objects.values_list('breed', flat=True).distinct()
+        colors = Cat.objects.values_list('color', flat=True).distinct()
+        personalitys = Cat.objects.values_list('personality', flat=True).distinct()
+
+        return render(request, 'find_cat.html', {
+            'breeds': breeds,
+            'colors': colors,
+            'personalitys': personalitys
+        })
+
+    return HttpResponseBadRequest('Invalid request method.')

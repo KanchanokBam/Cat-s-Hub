@@ -46,6 +46,7 @@
                 <p class="text-gray-600">Age: {{ cat.age }}</p>
                 <p class="text-gray-600">Breed: {{ cat.breed|default:"-" }}</p>
                 <p class="text-gray-600">Color: {{ cat.color|default:"-" }}</p>
+                <p class="text-gray-600">Personality: {{ cat.personality|default:"Not specified" }}</p>
             </a>
         {% empty %}
             <p class="text-gray-500 text-lg col-span-3 text-center">No cats available for adoption.</p>

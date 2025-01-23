@@ -21,5 +21,7 @@ urlpatterns = [
     path('cat/delete/<int:cat_id>/', views.delete_cat, name='delete_cat'),
     path('edit_cat/<int:cat_id>/', views.edit_cat, name='edit_cat'),
     path('statistics/', views.statistics, name='statistics'),
+    path('find-cat/', views.find_cat, name='find_cat'),
+    
 
 ]
