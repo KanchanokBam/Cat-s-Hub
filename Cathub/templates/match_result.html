@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Adopt Cat{% endblock %}
+
+{% block content %}
+<!-- Heading -->
+
+<!-- Main Section -->
+<div class="mt-10 px-6">
+    <h1 class="text-3xl font-bold text-center text-red-600 mb-6">Match Results</h1>
+
+    <!-- Matched Cats -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        {% for cat in matched_cats %}
+        <!-- Card with Link to cat_detail -->
+        <a href="{% url 'cat_detail' cat.id %}" class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition relative group">
+            <!-- Image -->
+            <div class="relative w-full h-48">
+                {% if cat.get_image_base64 %}
+                    <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                {% else %}
+                    <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                {% endif %}
+                <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full">
+                    <span class="text-sm font-medium">{{ cat.name }}</span>
+                </div>
+            </div>
+
+            <!-- Overlay on Hover -->
+            <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                <span class="text-white font-bold text-lg">View Details</span>
+            </div>
+        </a>
+        {% empty %}
+        <p class="text-gray-500 text-lg col-span-3 text-center">No matching cats found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -7,9 +7,10 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.db.models import Count
 from django.http import JsonResponse, HttpResponseBadRequest
+from django import forms
 from datetime import date
 from .models import Cat, User,UserProfile
-from .forms import SignUpForm, CatPostForm, UsernameUpdateForm, BirthDateForm ,ProfilePictureUpdateForm
+from .forms import SignUpForm, CatPostForm, UsernameUpdateForm, BirthDateForm ,ProfilePictureUpdateForm,CatForm,UserForm
 
 
 def signup(request):
@@ -53,7 +54,7 @@ def logout_view(request):
 
 @login_required(login_url='/signin/')
 def page1(request):
-    profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
     return render(request, 'home.html', {'profile': profile,'user': request.user})
 
 @login_required  
@@ -88,8 +89,9 @@ def adopt(request):
 
 @login_required
 def cat_detail(request, cat_id):
+    profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
     cat = get_object_or_404(Cat, id=cat_id)
-    return render(request, 'cat_detail.html', {'cat': cat})
+    return render(request, 'cat_detail.html', {'cat': cat,'profile': profile})
 
 @login_required
 def post_cat(request):
@@ -142,24 +144,6 @@ def edit_profile(request):
         'profile': profile,
     })
 
-
-@login_required
-def match(request):
-    profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
-    if request.method == 'POST':
-        form = BirthDateForm(request.POST)
-        if form.is_valid():
-            day = form.cleaned_data['day']
-            month = form.cleaned_data['month']
-            year = form.cleaned_data['year']
-            # ทำการประมวลผลที่นี่ (เช่น บันทึก, คำนวณ ฯลฯ)
-            messages.success(request, f'Your birth date is {day}/{month}/{year}')
-            return redirect('match')  # Redirect กลับมาที่หน้าเดิม
-    else:
-        form = BirthDateForm()
-    
-    return render(request, 'match.html', {'profile': profile,'form': form})
-
 @login_required
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)  # ดึงข้อมูลผู้ใช้ที่กำลังถูกเรียกดู
@@ -200,6 +184,7 @@ def statistics(request):
 
 @login_required
 def find_cat(request):
+    profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
     if request.method == 'POST':
         # รับค่าจากผู้ใช้
         personality = request.POST.get('personality')
@@ -272,7 +257,178 @@ def find_cat(request):
         return render(request, 'find_cat.html', {
             'breeds': breeds,
             'colors': colors,
-            'personalitys': personalitys
+            'personalitys': personalitys,
+            'profile': profile
         })
 
     return HttpResponseBadRequest('Invalid request method.')
+
+# Mapping ระหว่างราศีและนิสัยของแมว
+ZODIAC_PERSONALITY_MAP = {
+    'Aries': ['playful', 'adventurous', 'energetic'],
+    'Taurus': ['calm', 'affectionate', 'lazy'],
+    'Gemini': ['curious', 'talkative', 'active'],
+    'Cancer': ['affectionate', 'loyal', 'gentle'],
+    'Leo': ['confident', 'bold', 'attention-seeking'],
+    'Virgo': ['neat', 'smart', 'easygoing'],
+    'Libra': ['friendly', 'peaceful', 'charming'],
+    'Scorpio': ['independent', 'intense', 'unique'],
+    'Sagittarius': ['adventurous', 'playful', 'independent'],
+    'Capricorn': ['calm', 'loyal', 'easygoing'],
+    'Aquarius': ['quirky', 'creative', 'independent'],
+    'Pisces': ['gentle', 'dreamy', 'affectionate'],
+}
+
+
+# ฟังก์ชันคำนวณจักรราศี
+def get_zodiac_sign(day, month):
+    if (month == 1 and day >= 20) or (month == 2 and day <= 18):
+        return 'Aquarius'
+    elif (month == 2 and day >= 19) or (month == 3 and day <= 20):
+        return 'Pisces'
+    elif (month == 3 and day >= 21) or (month == 4 and day <= 19):
+        return 'Aries'
+    elif (month == 4 and day >= 20) or (month == 5 and day <= 20):
+        return 'Taurus'
+    elif (month == 5 and day >= 21) or (month == 6 and day <= 20):
+        return 'Gemini'
+    elif (month == 6 and day >= 21) or (month == 7 and day <= 22):
+        return 'Cancer'
+    elif (month == 7 and day >= 23) or (month == 8 and day <= 22):
+        return 'Leo'
+    elif (month == 8 and day >= 23) or (month == 9 and day <= 22):
+        return 'Virgo'
+    elif (month == 9 and day >= 23) or (month == 10 and day <= 22):
+        return 'Libra'
+    elif (month == 10 and day >= 23) or (month == 11 and day <= 21):
+        return 'Scorpio'
+    elif (month == 11 and day >= 22) or (month == 12 and day <= 21):
+        return 'Sagittarius'
+    elif (month == 12 and day >= 22) or (month == 1 and day <= 19):
+        return 'Capricorn'
+
+# View สำหรับจับคู่แมว
+@login_required
+def match(request):
+    profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
+    if request.method == 'POST':
+        form = BirthDateForm(request.POST)
+        if form.is_valid():
+            # รับวันเกิดจากฟอร์ม
+            birth_date = form.cleaned_data['birth_date']
+            day = birth_date.day
+            month = birth_date.month
+
+            # คำนวณจักรราศี
+            zodiac_sign = get_zodiac_sign(day, month)
+
+            # ดึงนิสัยแมวที่เหมาะสมกับจักรราศี
+            personalities = ZODIAC_PERSONALITY_MAP.get(zodiac_sign, [])
+
+            # ค้นหาแมวที่มีนิสัยตรงกับจักรราศี
+            matched_cats = Cat.objects.filter(
+                personality__icontains=personalities[0]
+            )
+
+            # ส่งผลลัพธ์ไปยังหน้าแสดงผล
+            return render(request, 'match_result.html', {
+                'zodiac_sign': zodiac_sign,
+                'matched_cats': matched_cats,
+                'profile': profile
+            })
+        else:
+            messages.error(request, "Invalid input. Please try again.")
+    else:
+        form = BirthDateForm()
+
+    return render(request, 'match.html', {'form': form,'profile': profile})
+
+
+# Check if user is admin
+def is_admin(user):
+    return user.is_superuser
+
+# Admin dashboard
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+    cats = Cat.objects.all()
+    users = User.objects.all()
+    return render(request, 'admin_dashboard.html', {'cats': cats, 'users': users})
+
+# Add new cat
+@user_passes_test(is_admin)
+def add_cat(request):
+    if request.method == 'POST':
+        form = CatForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Cat added successfully!')
+            return redirect('admin_dashboard')
+    else:
+        form = CatForm()
+    return render(request, 'admin_add_cat.html', {'form': form})
+
+@user_passes_test(is_admin)
+def add_user(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User added successfully!')
+            return redirect('admin_dashboard')
+    else:
+        form = UserForm()
+    return render(request, 'admin_add_user.html', {'form': form})
+
+# Edit user
+@user_passes_test(is_admin)
+def edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    class EditUserForm(forms.ModelForm):
+        class Meta:
+            model = User
+            fields = ['username', 'email', 'is_staff', 'is_superuser']
+            widgets = {
+                'username': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+                'email': forms.EmailInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+                'is_staff': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+                'is_superuser': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+            }
+    if request.method == 'POST':
+        form = EditUserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User updated successfully.')
+            return redirect('admin_dashboard')
+    else:
+        form = EditUserForm(instance=user)
+    return render(request, 'admin_edit_user.html', {'form': form, 'user': user})
+
+# Edit cat
+@user_passes_test(is_admin)
+def edit_cat_admin(request, cat_id):
+    cat = get_object_or_404(Cat, id=cat_id)  # ไม่จำเป็นต้องตรวจสอบ user เพราะ admin สามารถแก้ไขได้ทั้งหมด
+
+    if request.method == 'POST':
+        form = CatPostForm(request.POST, request.FILES, instance=cat)
+        if form.is_valid():
+            cat = form.save(commit=False)  # บันทึกข้อมูลในฟอร์มโดยไม่ commit ทันที
+            image = request.FILES.get('image')  # รับไฟล์รูปภาพจากฟอร์ม
+            if image:
+                cat.save_image(image)  # แปลงและบันทึกรูปภาพเป็น Base64
+            cat.save()  # บันทึกข้อมูลลงในฐานข้อมูล
+            messages.success(request, 'Cat updated successfully.')
+            return redirect('admin_dashboard')  # หลังแก้ไขเสร็จกลับไปที่หน้า Admin Dashboard
+    else:
+        form = CatPostForm(instance=cat)
+
+    return render(request, 'admin_edit_cat.html', {'form': form, 'cat': cat})
+@user_passes_test(is_admin)
+def delete_user(request, user_id):
+    """
+    ลบผู้ใช้งานโดย Admin
+    """
+    user = get_object_or_404(User, id=user_id)
+    user.delete()
+    messages.success(request, 'User deleted successfully.')
+    return redirect('admin_dashboard')

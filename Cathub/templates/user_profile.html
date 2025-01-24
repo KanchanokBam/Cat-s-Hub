@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user.username }} Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-yellow-50 text-gray-800">
+{% extends 'base.html' %}
 
-    <!-- Header -->
-    <nav class="bg-red-600 text-white px-6 py-3 flex justify-between items-center">
-        <a href="{% url 'adopt' %}" class="text-lg font-bold">Back to Adopt</a>
-        <h1 class="text-2xl font-bold">{{ user.username }}'s Profile</h1>
-    </nav>
+{% block title %}Adopt Cat{% endblock %}
 
+{% block content %}
+<!-- Heading -->
     <!-- Profile Section -->
     <div class="flex mt-8 mx-8">
         <!-- User Information -->
@@ -64,5 +54,4 @@
         </div>
     </div>
 
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+    <div class="grid grid-cols-2 gap-6">
+        <!-- User Management -->
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">Users</h2>
+            <a href="{% url 'add_user' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4 inline-block">Add New User</a>
+            <ul class="bg-white rounded shadow p-4 divide-y">
+                {% for user in users %}
+                <li class="flex justify-between items-center py-2">
+                    <span>{{ user.username }}</span>
+                    <div>
+                        <a href="{% url 'edit_user' user.id %}" class="text-blue-500 hover:underline mr-2">Edit</a>
+                        <a href="{% url 'delete_user' user.id %}" class="text-red-500 hover:underline" onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="text-gray-500 text-center">No users found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Cat Management -->
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">Cats</h2>
+            <a href="{% url 'add_cat' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4 inline-block">Add New Cat</a>
+            <ul class="bg-white rounded shadow p-4 divide-y">
+                {% for cat in cats %}
+                <li class="flex justify-between items-center py-2">
+                    <span>{{ cat.name }}</span>
+                    <div>
+                        <a href="{% url 'edit_cat' cat.id %}" class="text-blue-500 hover:underline mr-2">Edit</a>
+                        <a href="{% url 'delete_cat' cat.id %}" class="text-red-500 hover:underline" onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="text-gray-500 text-center">No cats found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

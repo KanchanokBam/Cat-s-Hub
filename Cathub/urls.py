@@ -22,6 +22,13 @@ urlpatterns = [
     path('edit_cat/<int:cat_id>/', views.edit_cat, name='edit_cat'),
     path('statistics/', views.statistics, name='statistics'),
     path('find-cat/', views.find_cat, name='find_cat'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin-dashboard/addcat/', views.add_cat, name='add_cat'),
+    path('admin-dashboard/adduser/', views.add_user, name='add_user'),
+    path('admin-dashboard/edit/<int:cat_id>/', views.edit_cat_admin, name='edit_cat'),
+    path('admin-dashboard/delete/<int:cat_id>/', views.delete_cat, name='delete_cat'),
+    path('admin-dashboard/delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
+    path('admin-dashboard/edit-user/<int:user_id>/', views.edit_user, name='edit_user'),
     
 
 ]

@@ -1,32 +1,59 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CatHub!{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ทำให้ Footer อยู่ด้านล่างเนื้อหาเสมอ */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        main {
+            flex: 1; /* ดัน footer ลงล่าง */
+        }
+    </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="bg-[#E9D8A6]">
 
-    <header class="bg-green-500">
-        <nav class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <div class="flex-1 flex items-center">
-                        <h1 style="color: #AE2012;" class="text-2xl font-bold">CatHub!</h1>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-    
-    <main class="flex-grow">
+    <!-- Navbar -->
+    <nav class="bg-[#9B2226] text-white px-8 py-3 flex items-center justify-between shadow-md">
+        <!-- Left Menu -->
+        <div class="flex items-center space-x-6">
+            <img src="https://img.icons8.com/?size=100&id=tvJZdxwTxU5v&format=png&color=000000" alt="Cat Icon" class="h-12 w-12">
+            <a href="{% url 'adopt' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">ADOPT</a>
+            <a href="{% url 'match' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">MATCH</a>
+            <a href="{% url 'statistics' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">Statistics</a>
+            <a href="{% url 'find_cat' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">TEST</a>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="flex items-center">
+            <a href="{% url 'profile' %}" class="flex items-center hover:text-[#E9D8A6] transition">
+                <img src="{{ profile.get_profile_picture }}" alt="User Profile" class="w-8 h-8 rounded-full">
+                <span class="ml-2 font-semibold">{{ user.username }}</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="py-8 px-4">
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="bg-gray-700 text-white py-4">
-        <p class="text-center">&copy; CatHub.</p>
+    <footer class="bg-[#9B2226] text-[#E9D8A6] text-center py-4">
+        <p>&copy; 2025 My Website</p>
+        {% if user.is_authenticated and user.is_staff %}
+            <!-- ลิงก์สำหรับ Admin -->
+            <a href="{% url 'admin_dashboard' %}" class="text-[#E9D8A6] hover:text-white font-bold transition">
+                Go to Admin Dashboard
+            </a>
+        {% endif %}
     </footer>
 
 </body>

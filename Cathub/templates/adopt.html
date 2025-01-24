@@ -1,64 +1,42 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-yellow-100 min-h-screen relative">
+{% extends 'base.html' %}
 
-    <!-- Header -->
-    <nav class="bg-red-600 text-white px-6 py-3 flex items-center justify-between shadow-md">
-        <nav class="bg-red-600 text-white px-6 py-3 flex justify-between items-center">
-            <a href="{% url 'home' %}" class="text-lg font-bold">Back to Home</a>
-        </nav>
-        <!-- Left Menu -->
-        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">ADOPT</a>
-        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition">MATCH</a>
-        <!-- Right Menu -->
-        <a href="{% url 'statistics' %}" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">Statistics</a>
-        <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition mr-2">TEST</a>
-        <!-- Profile Section -->
-        <a href="{% url 'profile' %}" class="flex items-center hover:text-yellow-300 transition">
-            <img src="{{ profile.get_profile_picture }}" alt="User Profile" class="w-8 h-8 rounded-full">
-            <span class="ml-1 font-semibold">{{ user.username }}</span>
-        </a>
-    </nav>
-    
-    <!-- Heading -->
-    <h1 class="text-4xl font-bold text-center text-red-600 mt-8">ADOPT CAT!</h1>
+{% block title %}Adopt Cat{% endblock %}
 
-    <!-- Cat Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-8 py-12">
-        {% for cat in cats %}
-            <!-- Cat Card -->
-            <a href="{% url 'cat_detail' cat.id %}" class="block bg-white shadow-lg rounded-lg p-6 text-center hover:shadow-2xl transition">
-                <div class="w-full h-48 bg-gray-300 rounded mb-4 overflow-hidden">
-                    {% if cat.get_image_base64 %}
-                        <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
-                    {% else %}
-                        <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
-                    {% endif %}
-                </div>
-                <h3 class="text-lg font-semibold">{{ cat.name }}</h3>
-                <p class="text-gray-600">Age: {{ cat.age }}</p>
-                <p class="text-gray-600">Breed: {{ cat.breed|default:"-" }}</p>
-                <p class="text-gray-600">Color: {{ cat.color|default:"-" }}</p>
-                <p class="text-gray-600">Personality: {{ cat.personality|default:"Not specified" }}</p>
-            </a>
-        {% empty %}
-            <p class="text-gray-500 text-lg col-span-3 text-center">No cats available for adoption.</p>
-        {% endfor %}
-    </div>
+{% block content %}
+<!-- Heading -->
+<header class="text-center mt-8">
+    <h1 class="text-5xl font-bold text-[#9B2226] mb-4">ADOPT CAT!</h1>
+    <p class="text-lg text-gray-700">Find your furry friend today.</p>
+</header>
 
-    <!-- Floating Action Button -->
-    <a href="{% url 'post' %}" class="fixed bottom-8 right-8 bg-red-500 text-white w-16 h-16 flex items-center justify-center rounded-full shadow-lg hover:bg-red-600 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
+<!-- Cat Grid -->
+<section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 px-8 py-12">
+    {% for cat in cats %}
+    <!-- Cat Card -->
+    <a href="{% url 'cat_detail' cat.id %}" class="relative bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition group">
+        <!-- Cat Image -->
+        <div class="w-full h-56 bg-gray-300">
+            {% if cat.get_image_base64 %}
+                <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+            {% else %}
+                <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
+            {% endif %}
+        </div>
+        
+        <!-- Name Overlay -->
+        <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full">
+            <span class="text-sm font-medium">{{ cat.name }}</span>
+        </div>
     </a>
+    {% empty %}
+    <p class="col-span-3 text-center text-gray-500 text-lg">No cats available for adoption at the moment.</p>
+    {% endfor %}
+</section>
 
-</body>
-</html>
+<!-- Floating Action Button -->
+<a href="{% url 'post' %}" class="fixed bottom-8 right-8 bg-[#9B2226] text-white w-16 h-16 flex items-center justify-center rounded-full shadow-lg hover:bg-[#82201F] transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+</a>
+{% endblock %}

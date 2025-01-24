@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New User</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <h1 class="text-2xl font-bold mb-6">Add New User</h1>
+    <form method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow-md">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="flex justify-between items-center">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Add User
+            </button>
+            <a href="{% url 'admin_dashboard' %}" class="text-blue-500 hover:underline">Cancel</a>
+        </div>
+    </form>
+</body>
+</html>

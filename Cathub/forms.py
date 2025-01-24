@@ -1,4 +1,5 @@
 from django import forms
+from datetime import datetime
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from .models import Cat ,UserProfile
@@ -65,21 +66,45 @@ class CatPostForm(forms.ModelForm):
 
 
 class BirthDateForm(forms.Form):
-    day = forms.IntegerField(
-        label="Day", min_value=1, max_value=31, 
-        widget=forms.NumberInput(attrs={'placeholder': 'Day', 'class': 'border rounded px-3 py-2 w-full'})
+    birth_date = forms.DateField(
+        label="Birth Date",
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',  # HTML5 Date Picker
+                'class': 'border rounded px-3 py-2 w-full',  # ใช้ TailwindCSS สำหรับ styling
+            }
+        )
     )
-    month = forms.IntegerField(
-        label="Month", min_value=1, max_value=12, 
-        widget=forms.NumberInput(attrs={'placeholder': 'Month', 'class': 'border rounded px-3 py-2 w-full'})
-    )
-    year = forms.IntegerField(
-        label="Year", min_value=1900, max_value=2024, 
-        widget=forms.NumberInput(attrs={'placeholder': 'Year', 'class': 'border rounded px-3 py-2 w-full'})
-    )
+
+
+
 class ProfilePictureUpdateForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False)  # รองรับการอัปโหลดไฟล์ภาพ
 
     class Meta:
         model = UserProfile
         fields = []  # ไม่ต้องระบุ fields อื่น เพราะจะจัดการผ่าน Base64
+
+
+class CatForm(forms.ModelForm):
+    class Meta:
+        model = Cat
+        fields = ['name', 'age', 'breed', 'color', 'personality', 'image_base64']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'age': forms.NumberInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'breed': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'color': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'personality': forms.Textarea(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+        }
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'is_staff', 'is_superuser']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'email': forms.EmailInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'is_staff': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+            'is_superuser': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+        }

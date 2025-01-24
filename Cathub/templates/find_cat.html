@@ -1,118 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Your Match</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Find Your Perfect Cat Match</h1>
-    
-    <form id="catPreferenceForm" method="POST" class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        {% csrf_token %}
+{% extends 'base.html' %}
+
+{% block title %}Adopt Cat{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="flex flex-col items-center justify-start mt-4">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Find Your Perfect Cat Match</h1>
         
-        <!-- Step 1: Personality -->
-        <div class="step" id="step1">
-            <h2 class="text-xl font-bold mb-4">Step 1: Choose Preferred Personality</h2>
-            <label class="text-gray-700">Preferred personality:</label>
-            <select name="personality" class="w-full border-gray-300 rounded-md">
-                <option value="">-- Select personality --</option>
-                {% for personality in personalitys %}
-                <option value="{{ personality }}">{{ personality }}</option>
-                {% endfor %}
-            </select>
-            <button type="button" onclick="nextStep(1)" class="bg-blue-500 text-white py-2 px-4 mt-4 rounded hover:bg-blue-600">
-                Next
-            </button>
-        </div>
-
-        <!-- Step 2: Age -->
-        <div class="step hidden" id="step2">
-            <h2 class="text-xl font-bold mb-4">Step 2: Choose Age Range</h2>
-            <label class="text-gray-700">Preferred age range:</label>
-            <select name="age" class="w-full border-gray-300 rounded-md">
-                <option value="">-- Select Age Range --</option>
-                <option value="kitten">Kitten (under 1 year)</option>
-                <option value="adult">Adult (1-6 years)</option>
-                <option value="senior">Senior (7+ years)</option>
-            </select>
-            <div class="mt-4">
-                <button type="button" onclick="prevStep(2)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
-                    Back
-                </button>
-                <button type="button" onclick="nextStep(2)" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+        <form id="catPreferenceForm" method="POST" class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+            {% csrf_token %}
+            
+            <!-- Step 1: Personality -->
+            <div class="step" id="step1">
+                <h2 class="text-xl font-bold">Step 1: Choose Preferred Personality</h2>
+                <label class="text-gray-700">Preferred personality:</label>
+                <select name="personality" class="w-full border-gray-300 rounded-md">
+                    <option value="">-- Select personality --</option>
+                    {% for personality in personalitys %}
+                    <option value="{{ personality }}">{{ personality }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" onclick="nextStep(1)" class="bg-blue-500 text-white py-2 px-4 mt-4 rounded hover:bg-blue-600">
                     Next
                 </button>
             </div>
-        </div>
 
-        <!-- Step 3: Breed -->
-        <div class="step hidden" id="step3">
-            <h2 class="text-xl font-bold mb-4">Step 3: Choose Preferred Breed</h2>
-            <label class="text-gray-700">Preferred breed:</label>
-            <select name="breed" class="w-full border-gray-300 rounded-md">
-                <option value="">-- Select Breed --</option>
-                {% for breed in breeds %}
-                <option value="{{ breed }}">{{ breed }}</option>
-                {% endfor %}
-            </select>
-            <div class="mt-4">
-                <button type="button" onclick="prevStep(3)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
-                    Back
-                </button>
-                <button type="button" onclick="nextStep(3)" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-                    Next
-                </button>
+            <!-- Step 2: Age -->
+            <div class="step hidden" id="step2">
+                <h2 class="text-xl font-bold">Step 2: Choose Age Range</h2>
+                <label class="text-gray-700">Preferred age range:</label>
+                <select name="age" class="w-full border-gray-300 rounded-md">
+                    <option value="">-- Select Age Range --</option>
+                    <option value="kitten">Kitten (under 1 year)</option>
+                    <option value="adult">Adult (1-6 years)</option>
+                    <option value="senior">Senior (7+ years)</option>
+                </select>
+                <div class="mt-4">
+                    <button type="button" onclick="prevStep(2)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                        Back
+                    </button>
+                    <button type="button" onclick="nextStep(2)" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                        Next
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <!-- Step 4: Color -->
-        <div class="step hidden" id="step4">
-            <h2 class="text-xl font-bold mb-4">Step 4: Choose Preferred Color</h2>
-            <label class="text-gray-700">Preferred color:</label>
-            <select name="color" class="w-full border-gray-300 rounded-md">
-                <option value="">-- Select Color --</option>
-                {% for color in colors %}
-                <option value="{{ color }}">{{ color }}</option>
-                {% endfor %}
-            </select>
-            <div class="mt-4">
-                <button type="button" onclick="prevStep(4)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
-                    Back
-                </button>
-                <button type="button" onclick="nextStep(4)" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
-                    Next
-                </button>
+            <!-- Step 3: Breed -->
+            <div class="step hidden" id="step3">
+                <h2 class="text-xl font-bold">Step 3: Choose Preferred Breed</h2>
+                <label class="text-gray-700">Preferred breed:</label>
+                <select name="breed" class="w-full border-gray-300 rounded-md">
+                    <option value="">-- Select Breed --</option>
+                    {% for breed in breeds %}
+                    <option value="{{ breed }}">{{ breed }}</option>
+                    {% endfor %}
+                </select>
+                <div class="mt-4">
+                    <button type="button" onclick="prevStep(3)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                        Back
+                    </button>
+                    <button type="button" onclick="nextStep(3)" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                        Next
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <!-- Step 5: Summary -->
-        <div class="step hidden" id="step5">
-            <h2 class="text-xl font-bold mb-4">Step 5: Confirm Your Preferences</h2>
-            <div class="bg-gray-100 p-4 rounded-lg">
-                <p class="text-gray-700"><strong>Preferred Personality:</strong> <span id="summary-personality">-</span></p>
-                <p class="text-gray-700"><strong>Preferred Age Range:</strong> <span id="summary-age">-</span></p>
-                <p class="text-gray-700"><strong>Preferred Breed:</strong> <span id="summary-breed">-</span></p>
-                <p class="text-gray-700"><strong>Preferred Color:</strong> <span id="summary-color">-</span></p>
+            <!-- Step 4: Color -->
+            <div class="step hidden" id="step4">
+                <h2 class="text-xl font-bold">Step 4: Choose Preferred Color</h2>
+                <label class="text-gray-700">Preferred color:</label>
+                <select name="color" class="w-full border-gray-300 rounded-md">
+                    <option value="">-- Select Color --</option>
+                    {% for color in colors %}
+                    <option value="{{ color }}">{{ color }}</option>
+                    {% endfor %}
+                </select>
+                <div class="mt-4">
+                    <button type="button" onclick="prevStep(4)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                        Back
+                    </button>
+                    <button type="button" onclick="nextStep(4)" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                        Next
+                    </button>
+                </div>
             </div>
-            <div class="mt-4">
-                <button type="button" onclick="prevStep(5)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
-                    Back
-                </button>
-                <button type="button" onclick="submitForm()" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
-                    Confirm and Submit
-                </button>
-            </div>
-        </div>
-    </form>
 
-    <div id="results" class="mt-8 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <!-- Step 5: Summary -->
+            <div class="step hidden" id="step5">
+                <h2 class="text-xl font-bold">Step 5: Confirm Your Preferences</h2>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="text-gray-700"><strong>Preferred Personality:</strong> <span id="summary-personality">-</span></p>
+                    <p class="text-gray-700"><strong>Preferred Age Range:</strong> <span id="summary-age">-</span></p>
+                    <p class="text-gray-700"><strong>Preferred Breed:</strong> <span id="summary-breed">-</span></p>
+                    <p class="text-gray-700"><strong>Preferred Color:</strong> <span id="summary-color">-</span></p>
+                </div>
+                <div class="mt-4">
+                    <button type="button" onclick="prevStep(5)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                        Back
+                    </button>
+                    <button type="button" onclick="submitForm()" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                        Confirm and Submit
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="results" class="mt-8 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
 
     <script>
         function nextStep(currentStep) {
@@ -184,5 +179,5 @@
             return cookieValue;
         }
     </script>
-</body>
-</html>
+
+{% endblock %}
