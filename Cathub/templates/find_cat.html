@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Adopt Cat{% endblock %}
+{% block title %}Test{% endblock %}
 
 {% block content %}
+
     <!-- Main Content -->
     <div class="flex flex-col items-center justify-start mt-4">
         <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Find Your Perfect Cat Match</h1>
@@ -20,7 +21,7 @@
                     <option value="{{ personality }}">{{ personality }}</option>
                     {% endfor %}
                 </select>
-                <button type="button" onclick="nextStep(1)" class="bg-blue-500 text-white py-2 px-4 mt-4 rounded hover:bg-blue-600">
+                <button type="button" onclick="nextStep(1)" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-blue-600 hover:to-blue-700 transition-transform transform hover:scale-105">
                     Next
                 </button>
             </div>
@@ -36,10 +37,10 @@
                     <option value="senior">Senior (7+ years)</option>
                 </select>
                 <div class="mt-4">
-                    <button type="button" onclick="prevStep(2)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                    <button type="button" onclick="prevStep(2)" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-red-600 hover:to-red-700 transition-transform transform hover:scale-105">
                         Back
                     </button>
-                    <button type="button" onclick="nextStep(2)" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                    <button type="button" onclick="nextStep(2)" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-blue-600 hover:to-blue-700 transition-transform transform hover:scale-105">
                         Next
                     </button>
                 </div>
@@ -56,10 +57,10 @@
                     {% endfor %}
                 </select>
                 <div class="mt-4">
-                    <button type="button" onclick="prevStep(3)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                    <button type="button" onclick="prevStep(3)" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-red-600 hover:to-red-700 transition-transform transform hover:scale-105">
                         Back
                     </button>
-                    <button type="button" onclick="nextStep(3)" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                    <button type="button" onclick="nextStep(3)" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-blue-600 hover:to-blue-700 transition-transform transform hover:scale-105">
                         Next
                     </button>
                 </div>
@@ -76,10 +77,10 @@
                     {% endfor %}
                 </select>
                 <div class="mt-4">
-                    <button type="button" onclick="prevStep(4)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                    <button type="button" onclick="prevStep(4)" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-red-600 hover:to-red-700 transition-transform transform hover:scale-105">
                         Back
                     </button>
-                    <button type="button" onclick="nextStep(4)" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                    <button type="button" onclick="nextStep(4)" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-blue-600 hover:to-blue-700 transition-transform transform hover:scale-105">
                         Next
                     </button>
                 </div>
@@ -95,11 +96,11 @@
                     <p class="text-gray-700"><strong>Preferred Color:</strong> <span id="summary-color">-</span></p>
                 </div>
                 <div class="mt-4">
-                    <button type="button" onclick="prevStep(5)" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                    <button type="button" onclick="prevStep(5)" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-red-600 hover:to-red-700 transition-transform transform hover:scale-105">
                         Back
                     </button>
-                    <button type="button" onclick="submitForm()" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
-                        Confirm and Submit
+                    <button type="button" onclick="submitForm(4)" class="bg-gradient-to-r from-green-500 to-green-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-green-600 hover:to-red-700 transition-transform transform hover:scale-105">
+                        Confirm
                     </button>
                 </div>
             </div>
@@ -108,19 +109,41 @@
         <div id="results" class="mt-8 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
 
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         function nextStep(currentStep) {
-            document.getElementById(`step${currentStep}`).classList.add('hidden');
-            document.getElementById(`step${currentStep + 1}`).classList.remove('hidden');
+    // ตรวจสอบว่ามีการตอบคำถามหรือไม่
+    const stepElement = document.getElementById(`step${currentStep}`);
+    const requiredInput = stepElement.querySelector('select');
+    
+    if (requiredInput && requiredInput.value === "") {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Incomplete Step',
+            text: 'Please complete this step before proceeding to the next one.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+        });
+        return; // หยุดการทำงานถ้ายังไม่ได้กรอกข้อมูล
+    }
+    
+    // ซ่อนขั้นตอนปัจจุบัน
+    stepElement.classList.add('hidden');
+    // แสดงขั้นตอนถัดไป
+    document.getElementById(`step${currentStep + 1}`).classList.remove('hidden');
 
-            if (currentStep === 4) {
-                document.getElementById('summary-personality').textContent = document.querySelector('[name="personality"]').value || 'Not selected';
-                document.getElementById('summary-age').textContent = document.querySelector('[name="age"]').value || 'Not selected';
-                document.getElementById('summary-breed').textContent = document.querySelector('[name="breed"]').value || 'Not selected';
-                document.getElementById('summary-color').textContent = document.querySelector('[name="color"]').value || 'Not selected';
-            }
-        }
+    if (currentStep === 4) {
+        document.getElementById('summary-personality').textContent = document.querySelector('[name="personality"]').value || 'Not selected';
+        document.getElementById('summary-age').textContent = document.querySelector('[name="age"]').value || 'Not selected';
+        document.getElementById('summary-breed').textContent = document.querySelector('[name="breed"]').value || 'Not selected';
+        document.getElementById('summary-color').textContent = document.querySelector('[name="color"]').value || 'Not selected';
+    }
+}
+
 
         function prevStep(currentStep) {
             document.getElementById(`step${currentStep}`).classList.add('hidden');
@@ -145,13 +168,14 @@
                 } else {
                     data.cats.forEach(cat => {
                         const catCard = `
-                            <a href="/cat/${cat.id}/" class="block">
-                                <div class="cat-card bg-white p-4 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow">
-                                    <img src="${cat.image_url}" alt="${cat.name}" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
-                                    <h3 class="text-xl font-bold text-gray-800">${cat.name}</h3>
-                                    <p class="text-gray-600">Age: ${cat.age}</p>
-                                    <p class="text-gray-600">Breed: ${cat.breed}</p>
-                                    <p class="text-gray-600">Color: ${cat.color}</p>
+                            <a href="/cat/${cat.id}/" class="relative bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition group">
+                                <!-- Cat Image -->
+                                <div class="w-full h-56 bg-gray-300">
+                                    <img src="${cat.image_url || 'https://via.placeholder.com/300'}" alt="${cat.name}" class="w-full h-full object-cover">
+                                </div>
+                                <!-- Name Overlay -->
+                                <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full">
+                                    <span class="text-sm font-medium">${cat.name}</span>
                                 </div>
                             </a>
                         `;
