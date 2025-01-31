@@ -89,7 +89,7 @@ class ProfilePictureUpdateForm(forms.ModelForm):
 class CatForm(forms.ModelForm):
     class Meta:
         model = Cat
-        fields = ['name', 'age', 'breed', 'color', 'personality', 'image_base64']
+        fields = ['name', 'age', 'breed', 'color', 'personality', 'image_base64']  # ไม่ต้องเพิ่ม 'user'
         widgets = {
             'name': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
             'age': forms.NumberInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),

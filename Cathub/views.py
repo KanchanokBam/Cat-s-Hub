@@ -7,10 +7,13 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.db.models import Count
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.utils.timezone import now, timedelta
 from django import forms
+from django.core.exceptions import PermissionDenied
 from datetime import date
 from .models import Cat, User,UserProfile
 from .forms import SignUpForm, CatPostForm, UsernameUpdateForm, BirthDateForm ,ProfilePictureUpdateForm,CatForm,UserForm
+import base64
 
 
 def signup(request):
@@ -157,7 +160,6 @@ def delete_cat(request, cat_id):
     cat.delete()
     return redirect('profile')  # หลังลบเสร็จให้กลับไปที่หน้า Profile
 
-@login_required
 def edit_cat(request, cat_id):
     cat = get_object_or_404(Cat, id=cat_id, user=request.user)  # ตรวจสอบว่าเป็นเจ้าของโพสต์
     if request.method == 'POST':
@@ -168,11 +170,12 @@ def edit_cat(request, cat_id):
             if image:
                 cat.save_image(image)  # แปลงและบันทึกเป็น Base64
             cat.save()
-            return redirect('profile')  # กลับไปที่ Profile หลังแก้ไขเสร็จ
+            return redirect('edit_cat', cat_id=cat.id)  # กลับไปที่หน้า edit_cat ของผู้ใช้งานทั่วไป
     else:
         form = CatPostForm(instance=cat)
 
     return render(request, 'edit_cat.html', {'form': form, 'cat': cat})
+
 
 @login_required
 def statistics(request):
@@ -344,16 +347,38 @@ def match(request):
     return render(request, 'match.html', {'form': form,'profile': profile})
 
 
+
+
+
 # Check if user is admin
+
 def is_admin(user):
-    return user.is_superuser
+    if user.is_staff or user.is_superuser:
+        return True
+    raise PermissionDenied("You do not have permission to access this page.")
 
 # Admin dashboard
 @user_passes_test(is_admin)
 def admin_dashboard(request):
-    cats = Cat.objects.all()
-    users = User.objects.all()
-    return render(request, 'admin_dashboard.html', {'cats': cats, 'users': users})
+    today = now().date()
+
+    # จำนวนแมวที่ถูก adopt วันนี้ (เปลี่ยนจาก adopted เป็น is_adopted)
+    adopted_cats_today = Cat.objects.filter(is_adopted=True, adopted_date=today).count()
+
+    # จำนวนผู้ใช้งานที่เข้าเว็บ (สมมติว่าใช้ last_login เป็นตัววัด)
+    users_logged_in_today = User.objects.filter(last_login__date=today).count()
+
+    # จำนวนโพสต์แมวทั้งหมดในระบบ
+    total_cats_posted = Cat.objects.count()
+
+    context = {
+        'adopted_cats_today': adopted_cats_today,
+        'users_logged_in_today': users_logged_in_today,
+        'total_cats_posted': total_cats_posted,
+        'users': User.objects.all(),
+        'cats': Cat.objects.all(),
+    }
+    return render(request, 'admin_dashboard.html', context)
 
 # Add new cat
 @user_passes_test(is_admin)
@@ -361,12 +386,21 @@ def add_cat(request):
     if request.method == 'POST':
         form = CatForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            cat = form.save(commit=False)  # หยุดก่อนบันทึก
+            cat.user = request.user  # กำหนดค่า user
+            
+            # ถ้ามีอัปโหลดไฟล์ภาพ ให้แปลงเป็น Base64
+            image = request.FILES.get('image')
+            if image:
+                cat.image_base64 = base64.b64encode(image.read()).decode('utf-8')
+            
+            cat.save()  # บันทึกลงฐานข้อมูล
             messages.success(request, 'Cat added successfully!')
             return redirect('admin_dashboard')
     else:
         form = CatForm()
     return render(request, 'admin_add_cat.html', {'form': form})
+
 
 @user_passes_test(is_admin)
 def add_user(request):
@@ -380,49 +414,58 @@ def add_user(request):
         form = UserForm()
     return render(request, 'admin_add_user.html', {'form': form})
 
-# Edit user
 @user_passes_test(is_admin)
 def edit_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
-    class EditUserForm(forms.ModelForm):
-        class Meta:
-            model = User
-            fields = ['username', 'email', 'is_staff', 'is_superuser']
-            widgets = {
-                'username': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
-                'email': forms.EmailInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
-                'is_staff': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
-                'is_superuser': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
-            }
+    user_profile, _ = UserProfile.objects.get_or_create(user=user)
+
     if request.method == 'POST':
-        form = EditUserForm(request.POST, instance=user)
+        form = UserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
-            form.save()
+            # บันทึกข้อมูลผู้ใช้
+            user = form.save(commit=False)
+            if 'profile_picture' in request.FILES:
+                # แปลงรูปภาพให้เป็น Base64
+                image = request.FILES['profile_picture']
+                user_profile.profile_picture_base64 = base64.b64encode(image.read()).decode('utf-8')
+                user_profile.save()
+            user.save()
             messages.success(request, 'User updated successfully.')
             return redirect('admin_dashboard')
     else:
-        form = EditUserForm(instance=user)
-    return render(request, 'admin_edit_user.html', {'form': form, 'user': user})
+        form = UserForm(instance=user)
+
+    return render(request, 'admin_edit_user.html', {
+        'form': form,
+        'user': user,
+        'profile_picture': user_profile.get_profile_picture()  # ส่งรูปภาพ Base64 ไปยังเทมเพลต
+    })
+
 
 # Edit cat
 @user_passes_test(is_admin)
 def edit_cat_admin(request, cat_id):
-    cat = get_object_or_404(Cat, id=cat_id)  # ไม่จำเป็นต้องตรวจสอบ user เพราะ admin สามารถแก้ไขได้ทั้งหมด
+    cat = get_object_or_404(Cat, id=cat_id)
+
+    if not request.user.is_staff and not request.user.is_superuser:
+        raise PermissionDenied("Only admin users can access this page.")
 
     if request.method == 'POST':
         form = CatPostForm(request.POST, request.FILES, instance=cat)
         if form.is_valid():
-            cat = form.save(commit=False)  # บันทึกข้อมูลในฟอร์มโดยไม่ commit ทันที
-            image = request.FILES.get('image')  # รับไฟล์รูปภาพจากฟอร์ม
+            cat = form.save(commit=False)
+            image = request.FILES.get('image')
             if image:
-                cat.save_image(image)  # แปลงและบันทึกรูปภาพเป็น Base64
-            cat.save()  # บันทึกข้อมูลลงในฐานข้อมูล
+                cat.save_image(image)
+            cat.save()
             messages.success(request, 'Cat updated successfully.')
-            return redirect('admin_dashboard')  # หลังแก้ไขเสร็จกลับไปที่หน้า Admin Dashboard
+            return redirect('admin_dashboard')
     else:
         form = CatPostForm(instance=cat)
 
     return render(request, 'admin_edit_cat.html', {'form': form, 'cat': cat})
+
+
 @user_passes_test(is_admin)
 def delete_user(request, user_id):
     """
@@ -431,4 +474,12 @@ def delete_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     user.delete()
     messages.success(request, 'User deleted successfully.')
+    return redirect('admin_dashboard')
+
+@user_passes_test(is_admin)
+def admin_delete_cat(request, cat_id):
+    # ดึงข้อมูลแมวตาม ID หรือแสดง 404 ถ้าไม่เจอ
+    cat = get_object_or_404(Cat, id=cat_id)
+    cat.delete()
+    messages.success(request, f"Cat with ID {cat_id} has been deleted successfully.")
     return redirect('admin_dashboard')

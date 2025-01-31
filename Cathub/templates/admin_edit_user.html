@@ -6,12 +6,84 @@
     <title>Edit User</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
-    <h1 class="text-3xl font-bold mb-6">Edit User</h1>
-    <form method="post" class="bg-white p-6 rounded shadow max-w-md">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Changes</button>
-    </form>
+<body class="bg-gradient-to-r from-[#94D2BD] via-[#0A9396] to-[#005F73] flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="text-green-500 mb-4 text-center">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Profile Picture -->
+        {% if profile_picture %}
+            <div class="mb-6 text-center">
+                <img src="{{ profile_picture }}" 
+                     alt="Profile Picture" class="w-24 h-24 rounded-full mx-auto shadow-lg">
+            </div>
+        {% else %}
+            <div class="mb-6 text-center">
+                <div class="w-24 h-24 rounded-full bg-gray-300 mx-auto flex items-center justify-center shadow-lg">
+                    <span class="text-gray-500">No Image</span>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div>
+                <label for="id_username" class="block text-sm font-medium text-[#005F73]">Username</label>
+                <input type="text" id="id_username" name="username" 
+                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-[#0A9396] focus:border-[#0A9396]" 
+                       placeholder="Enter username" value="{{ form.username.value|default:'' }}">
+                {% if form.username.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="id_email" class="block text-sm font-medium text-[#005F73]">Email</label>
+                <input type="email" id="id_email" name="email" 
+                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-[#0A9396] focus:border-[#0A9396]" 
+                       placeholder="Enter email" value="{{ form.email.value|default:'' }}">
+                {% if form.email.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Staff Status -->
+            <div class="flex items-center">
+                <input type="checkbox" id="id_is_staff" name="is_staff" 
+                       class="h-4 w-4 text-[#0A9396] focus:ring-[#0A9396] border-gray-300 rounded" 
+                       {% if form.is_staff.value %}checked{% endif %}>
+                <label for="id_is_staff" class="ml-2 block text-sm text-[#005F73]">Staff status</label>
+            </div>
+
+            <!-- Superuser Status -->
+            <div class="flex items-center">
+                <input type="checkbox" id="id_is_superuser" name="is_superuser" 
+                       class="h-4 w-4 text-[#0A9396] focus:ring-[#0A9396] border-gray-300 rounded" 
+                       {% if form.is_superuser.value %}checked{% endif %}>
+                <label for="id_is_superuser" class="ml-2 block text-sm text-[#005F73]">Superuser status</label>
+            </div>
+
+            <!-- Upload Profile Picture -->
+            <div>
+                <label for="id_profile_picture" class="block text-sm font-medium text-[#005F73]">Upload Profile Picture</label>
+                <input type="file" id="id_profile_picture" name="profile_picture" 
+                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-[#0A9396] focus:border-[#0A9396]">
+            </div>
+
+            <!-- Save Changes Button -->
+            <button type="submit" 
+                    class="w-full bg-[#0A9396] text-white py-2 rounded-lg hover:bg-[#005F73] hover:shadow-lg transition duration-200">
+                Save Changes
+            </button>
+        </form>
+    </div>
 </body>
 </html>

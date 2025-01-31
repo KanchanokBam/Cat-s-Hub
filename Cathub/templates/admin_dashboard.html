@@ -6,46 +6,93 @@
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
-    <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
-    <div class="grid grid-cols-2 gap-6">
+<body class="bg-[#E9F5F5] min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gradient-to-b from-[#005F73] to-[#0A9396] shadow-lg p-6 rounded-r-2xl">
+        <h2 class="text-2xl font-bold text-white mb-6">เมนูแอดมิน</h2>
+        <ul class="space-y-3">
+            <li>
+                <a href="#user-management" onclick="showSection('user-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
+                    จัดการผู้ใช้งาน
+                </a>
+            </li>
+            <li>
+                <a href="#cat-management" onclick="showSection('cat-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
+                    จัดการแมว
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+        <h1 class="text-3xl font-bold text-[#005F73] mb-6">Admin Dashboard</h1>
+
+        <!-- Summary Section -->
+        <div class="grid grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h3 class="text-lg font-semibold text-gray-700">แมวถูก Adopt วันนี้</h3>
+                <p class="text-3xl font-bold text-[#0A9396]">{{ adopted_cats_today }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h3 class="text-lg font-semibold text-gray-700">ผู้ใช้งานวันนี้</h3>
+                <p class="text-3xl font-bold text-[#0A9396]">{{ users_logged_in_today }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h3 class="text-lg font-semibold text-gray-700">แมวทั้งหมดในระบบ</h3>
+                <p class="text-3xl font-bold text-[#0A9396]">{{ total_cats_posted }}</p>
+            </div>
+        </div>
+
         <!-- User Management -->
-        <div>
-            <h2 class="text-2xl font-semibold mb-4">Users</h2>
-            <a href="{% url 'add_user' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4 inline-block">Add New User</a>
-            <ul class="bg-white rounded shadow p-4 divide-y">
+        <div id="user-management" class="content-section bg-white rounded-lg shadow-lg p-6 animate-fade-in">
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการผู้ใช้งาน</h2>
+            <a href="{% url 'add_user' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มผู้ใช้งาน</a>
+            <ul class="divide-y">
                 {% for user in users %}
                 <li class="flex justify-between items-center py-2">
-                    <span>{{ user.username }}</span>
+                    <span class="text-[#005F73]">{{ user.username }}</span>
                     <div>
-                        <a href="{% url 'edit_user' user.id %}" class="text-blue-500 hover:underline mr-2">Edit</a>
-                        <a href="{% url 'delete_user' user.id %}" class="text-red-500 hover:underline" onclick="return confirm('Are you sure?')">Delete</a>
+                        <a href="{% url 'edit_user' user.id %}" class="text-[#0A9396] hover:underline mr-2">แก้ไข</a>
+                        <a href="{% url 'delete_user' user.id %}" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</a>
                     </div>
                 </li>
                 {% empty %}
-                <li class="text-gray-500 text-center">No users found.</li>
+                <li class="text-gray-500 text-center py-2">ไม่พบผู้ใช้งาน</li>
                 {% endfor %}
             </ul>
         </div>
 
         <!-- Cat Management -->
-        <div>
-            <h2 class="text-2xl font-semibold mb-4">Cats</h2>
-            <a href="{% url 'add_cat' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4 inline-block">Add New Cat</a>
-            <ul class="bg-white rounded shadow p-4 divide-y">
+        <div id="cat-management" class="content-section bg-white rounded-lg shadow-lg p-6 animate-fade-in hidden">
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการแมว</h2>
+            <a href="{% url 'add_cat' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มแมว</a>
+            <ul class="divide-y">
                 {% for cat in cats %}
                 <li class="flex justify-between items-center py-2">
-                    <span>{{ cat.name }}</span>
+                    <span class="text-[#005F73]">{{ cat.name }}</span>
                     <div>
-                        <a href="{% url 'edit_cat' cat.id %}" class="text-blue-500 hover:underline mr-2">Edit</a>
-                        <a href="{% url 'delete_cat' cat.id %}" class="text-red-500 hover:underline" onclick="return confirm('Are you sure?')">Delete</a>
+                        <a href="{% url 'edit_cat' cat.id %}" class="text-[#0A9396] hover:underline mr-2">แก้ไข</a>
+                        <a href="{% url 'admin_delete_cat' cat.id %}" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</a>
                     </div>
                 </li>
                 {% empty %}
-                <li class="text-gray-500 text-center">No cats found.</li>
+                <li class="text-gray-500 text-center py-2">ไม่พบแมว</li>
                 {% endfor %}
             </ul>
         </div>
     </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('user-management');
+        });
+    </script>
 </body>
 </html>
