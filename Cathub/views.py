@@ -9,11 +9,12 @@ from django.db.models import Count
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.utils.timezone import now, timedelta
 from django import forms
+from django.templatetags.static import static
 from django.core.exceptions import PermissionDenied
 from datetime import date
 from .models import Cat, User,UserProfile
 from .forms import SignUpForm, CatPostForm, UsernameUpdateForm, BirthDateForm ,ProfilePictureUpdateForm,CatForm,UserForm
-import base64
+import base64, random
 
 
 def signup(request):
@@ -55,10 +56,15 @@ def logout_view(request):
 
 
 
+
 @login_required(login_url='/signin/')
 def page1(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
-    return render(request, 'home.html', {'profile': profile,'user': request.user})
+    cats = list(Cat.objects.all())  # ดึงข้อมูลแมวทั้งหมดเป็นลิสต์
+    random.shuffle(cats)  # สุ่มลำดับข้อมูลแมว
+    cats = cats[:7]  # เลือก 7 ตัวแรกหลังจากสุ่ม
+    return render(request, 'home.html', {'profile': profile, 'user': request.user, 'cats': cats})
+
 
 @login_required  
 def profile_view(request):
@@ -314,6 +320,7 @@ def get_zodiac_sign(day, month):
 @login_required
 def match(request):
     profile = UserProfile.objects.get(user=request.user)  # ดึงข้อมูลโปรไฟล์ของผู้ใช้
+    
     if request.method == 'POST':
         form = BirthDateForm(request.POST)
         if form.is_valid():
@@ -325,17 +332,22 @@ def match(request):
             # คำนวณจักรราศี
             zodiac_sign = get_zodiac_sign(day, month)
 
+            # ดึงรายละเอียดราศีจาก ZODIAC_DETAILS
+            zodiac_data = ZODIAC_DETAILS.get(zodiac_sign, {})
+            zodiac_image = zodiac_data.get("image", "")  # ดึง URL รูปภาพของราศี
+
             # ดึงนิสัยแมวที่เหมาะสมกับจักรราศี
             personalities = ZODIAC_PERSONALITY_MAP.get(zodiac_sign, [])
 
             # ค้นหาแมวที่มีนิสัยตรงกับจักรราศี
             matched_cats = Cat.objects.filter(
-                personality__icontains=personalities[0]
+                personality__icontains=personalities[0] if personalities else ""
             )
 
-            # ส่งผลลัพธ์ไปยังหน้าแสดงผล
+            # ส่งผลลัพธ์ไปยังหน้า match_result.html
             return render(request, 'match_result.html', {
                 'zodiac_sign': zodiac_sign,
+                'zodiac_image': zodiac_image,  # ส่งรูปการ์ดราศีไปยัง template
                 'matched_cats': matched_cats,
                 'profile': profile
             })
@@ -344,10 +356,55 @@ def match(request):
     else:
         form = BirthDateForm()
 
-    return render(request, 'match.html', {'form': form,'profile': profile})
+    return render(request, 'match.html', {'form': form, 'profile': profile})
 
 
+# ข้อมูลราศี (ตัวอย่าง)
+ZODIAC_DETAILS = {
+    "Aries": {
+        "image": static("images/zodiac/aries.png"),
+    },
+    "Taurus": {
+        "image": static("images/zodiac/Taurus.png"),
+    },
+    "Gemini": {
+        "image": static("images/zodiac/Gemini.png"),
+    },
+    "Cancer": {
+        "image": static("images/zodiac/Cancer.png"),
+    },
+    "Leo": {
+        "image": static("images/zodiac/Leo.png"),
+    },
+    "Virgo": {
+        "image": static("images/zodiac/Virgo.png"),
+    },
+    "Libra": {
+        "image": static("images/zodiac/Libra.png"),
+    },
+    "Scorpio": {
+        "image": static("images/zodiac/Scorpio.png"),
+    },
+    "Sagittarius": {
+        "image": static("images/zodiac/Sagittarius.png"),
+    },
+    "Capricorn": {
+        "image": static("images/zodiac/Capricorn.png"),
+    },
+    "Aquarius": {
+        "image": static("images/zodiac/Aquarius.png"),
+    },
+    "Pisces": {
+        "image": static("images/zodiac/Pisces.png"),
+    },
+}
 
+'''def zodiac_detail(request, zodiac_sign):
+    zodiac_info = ZODIAC_DETAILS.get(zodiac_sign, {"image": "https://via.placeholder.com/150", "description": "No details available."})
+    return render(request, "zodiac_detail.html", {
+        "zodiac_sign": zodiac_sign,
+        "zodiac_image": zodiac_info["image"],
+    })'''
 
 
 # Check if user is admin

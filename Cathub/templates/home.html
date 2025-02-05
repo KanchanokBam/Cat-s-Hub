@@ -3,12 +3,109 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<!-- Heading -->
-    
-    <!-- Main Content -->
-    <div class="container mx-auto mt-10 text-center">
-        <h1 class="text-4xl font-bold text-gray-800">Welcome, {{ user.username }}!</h1>
-        <p class="text-gray-600 mt-4">This is your Home Page.</p>
+<!-- Alpine.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+<!-- Custom CSS -->
+<style>
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none; /* ซ่อน scrollbar สำหรับ Chrome, Safari */
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;  /* ซ่อน scrollbar สำหรับ IE และ Edge */
+        scrollbar-width: none;  /* ซ่อน scrollbar สำหรับ Firefox */
+    }
+</style>
+
+<!-- Background Section -->
+<div class="container mx-auto text-center">
+    <h1 class="text-5xl font-extrabold text-gray-900 drop-shadow-md">Welcome, {{ user.username }}! 🐾</h1>
+</div>
+
+<!-- Cat Adoption Section -->
+<div class="container mx-auto mt-10 px-6">
+    <h1 class="text-5xl font-bold text-[#9B2226] mb-4">ADOPT CAT!🐱</h1>
+
+    {% if cats %}
+    <div x-data="scrollHandler()" x-init="init()" class="relative">
+        <div x-ref="scrollContainer" class="flex space-x-6 overflow-x-auto scroll-smooth scrollbar-hide py-4 px-2">
+            {% for cat in cats %}
+            <a href="{% url 'cat_detail' cat.id %}" class="relative min-w-[280px] bg-white shadow-lg rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300">
+                <div class="w-full h-56">
+                    {% if cat.get_image_base64 %}
+                        <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                    {% endif %}
+                </div>
+                <div class="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white px-4 py-1 rounded-full shadow-lg">
+                    <span class="text-sm font-medium tracking-wide">{{ cat.name }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
     </div>
+    {% else %}
+    <p class="text-center text-gray-500 mt-4">No cats available for adoption at the moment.</p>
+    {% endif %}
+
+    <div class="mt-8 text-center">
+        <a href="{% url 'adopt' %}" class="bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-orange-600 transition">
+            See All Cats
+        </a>
+    </div>
+</div>
+
+<!-- Foundation Section -->
+<div class="container mx-auto mt-16 px-6">
+    <h2 class="text-4xl font-semibold text-center text-gray-800 mb-6">Cat Rescue Foundations in Thailand 🇹🇭</h2>
+    <p class="text-lg text-center text-gray-600 mb-8">These organizations work tirelessly to save and care for stray cats. Support them today! 💖</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <a href="https://www.facebook.com/TheVoiceForAnimals/" target="_blank" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
+            <img src="https://via.placeholder.com/150" alt="The Voice Foundation" class="w-24 h-24 object-cover rounded-full">
+            <h3 class="text-lg font-semibold mt-4">The Voice Foundation</h3>
+        </a>
+        
+        <a href="https://www.soidog.org/" target="_blank" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
+            <img src="https://via.placeholder.com/150" alt="Soi Dog Foundation" class="w-24 h-24 object-cover rounded-full">
+            <h3 class="text-lg font-semibold mt-4">Soi Dog Foundation</h3>
+        </a>
+    </div>
+</div>
+
+<!-- Cat Facts Section -->
+<div class="container mx-auto mt-16 px-6">
+    <h2 class="text-4xl font-semibold text-center text-gray-800 mb-6">Did You Know? 🐱</h2>
+    <p class="text-lg text-center text-gray-600 mb-8">Here are some fun and interesting facts about cats!</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
+            <h3 class="text-lg font-bold">Cats Sleep 70% of Their Lives 😴</h3>
+            <p class="text-sm text-gray-600 mt-2">An average cat sleeps for about 13-16 hours a day!</p>
+        </div>
+
+        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
+            <h3 class="text-lg font-bold">Cats Can Make 100+ Sounds 🎶</h3>
+            <p class="text-sm text-gray-600 mt-2">Unlike dogs, cats have over 100 vocal sounds.</p>
+        </div>
+
+        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
+            <h3 class="text-lg font-bold">Whiskers Help in Navigation 🧭</h3>
+            <p class="text-sm text-gray-600 mt-2">Cats use their whiskers to measure gaps and detect changes in their surroundings.</p>
+        </div>
+
+        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
+            <h3 class="text-lg font-bold">A Cat’s Nose is Unique! 👃</h3>
+            <p class="text-sm text-gray-600 mt-2">Just like human fingerprints, each cat's nose print is unique.</p>
+        </div>
+    </div>
+
+    <div class="mt-10 text-center">
+        <a href="#" class="bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-orange-600 transition">
+            Read More Facts 🐾
+        </a>
+    </div>
+</div>
 
 {% endblock %}
