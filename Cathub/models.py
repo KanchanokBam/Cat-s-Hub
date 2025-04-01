@@ -1,11 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+from django.utils.timezone import now
 import base64, random
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture_base64 = models.TextField(blank=True, null=True)  # รูปภาพในรูปแบบ Base64
+    profile_picture_base64 = models.TextField(blank=True, null=True)  # รูปภาพโปรไฟล์ Base64
+    phone = models.CharField(max_length=15, blank=True, null=True)  # เบอร์โทรศัพท์
+    line = models.CharField(max_length=50, blank=True, null=True)  # LINE ID
 
     def get_profile_picture(self):
         """คืนค่า Base64 สำหรับใช้ใน <img> หรือ None หากไม่มีรูป"""
@@ -50,3 +53,30 @@ class Cat(models.Model):
 
     def __str__(self):
         return self.name
+    
+class ContactRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),   # รอเจ้าของอนุมัติ
+        ('approved', 'Approved'), # อนุมัติแล้ว
+        ('declined', 'Declined'), # ปฏิเสธ
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requests_sent")  # ผู้ที่ร้องขอข้อมูล
+    cat = models.ForeignKey("Cat", on_delete=models.CASCADE)  # แมวที่ถูกขอข้อมูล
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} requested contact for {self.cat.name} - {self.status}"
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")  # ผู้รับแจ้งเตือน
+    contact_request = models.ForeignKey(ContactRequest, on_delete=models.CASCADE, null=True, blank=True)  # เชื่อมโยงกับ ContactRequest
+    message = models.TextField()  # ข้อความแจ้งเตือน
+    is_read = models.BooleanField(default=False)  # สถานะว่าอ่านหรือยัง
+    created_at = models.DateTimeField(default=now)  # เวลาที่แจ้งเตือน
+    action_url = models.CharField(max_length=255, blank=True, null=True)  # ลิงก์ไปยังหน้าที่เกี่ยวข้อง
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.message}"

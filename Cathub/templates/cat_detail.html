@@ -50,21 +50,40 @@
                     </li>
                 </ul>
 
-                <!-- Contact Button -->
-                <div class="mt-4">
-                    {% if not cat.is_adopted %}
-                    <a href="{% url 'user_profile' cat.user.username %}" 
-                       class="px-6 py-3 bg-[#9B2226] text-white text-lg font-medium rounded-lg hover:bg-[#82201F] transition inline-block shadow-md">
-                        Contact Me
-                    </a>
-                    {% else %}
-                    <span class="text-gray-500 text-sm">This cat has been adopted</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                <!-- ปุ่มขอข้อมูลการติดต่อ -->
+                <button id="requestContactBtn"
+                        data-cat-id="{{ cat.id }}"
+                        class="px-6 py-3 bg-[#9B2226] text-white text-lg font-medium rounded-lg hover:bg-[#82201F] transition inline-block shadow-md">
+                    Request Contact
+                </button>
+                <p id="requestMessage" class="mt-2 text-sm text-gray-600 hidden">Request sent successfully!</p>
 
+                <!-- JavaScript -->
+                <script>
+                document.getElementById("requestContactBtn")?.addEventListener("click", function () {
+                    let catId = this.getAttribute("data-cat-id");
+
+                    fetch(`/api/request_contact/${catId}/`, {  // <<<< ตรวจสอบ path ให้ตรงกับ urls.py
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}",
+                            "Content-Type": "application/json"
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById("requestMessage").classList.remove("hidden");
+                            document.getElementById("requestContactBtn").textContent = "Requested";
+                            document.getElementById("requestContactBtn").disabled = true;
+                        } else {
+                            alert("Request failed: " + data.error);
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+                });
+                </script>
+
+    
 
 {% endblock %}

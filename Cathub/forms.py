@@ -31,6 +31,14 @@ class CatPostForm(forms.ModelForm):
         ('friendly', 'Friendly'),
         ('independent', 'Independent'),
         ('curious', 'Curious'),
+        ('active', 'Active'),
+        ('gentle', 'Gentle'),
+        ('confident', 'Confident'),
+        ('smart', 'Smart'),
+        ('unique', 'Unique'),
+        ('adventurous', 'Adventurous'),
+        ('easygoings', 'Easygoing'),
+
     ]
     
     personality = forms.ChoiceField(

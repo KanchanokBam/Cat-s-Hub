@@ -56,19 +56,23 @@
         document.getElementById('zodiacDetail').innerText = zodiac.name;
         document.getElementById('zodiacImage').src = zodiac.icon;
         document.getElementById('zodiacImage').alt = zodiac.name + " Icon";
-        document.getElementById('zodiacCard').classList.remove('hidden'); // แสดงราศี
+        
+        // ซ่อนการ์ดราศีเมื่อแสดง Popup
+        document.getElementById('zodiacCard').classList.add('hidden');
 
+        // แสดง Popup
         const popup = document.getElementById('popup');
-        popup.classList.remove('hidden'); // แสดง popup
+        popup.classList.remove('hidden');
 
         // จำลองการโหลด และส่งฟอร์ม
         setTimeout(() => {
-            document.getElementById('matchForm').submit(); // ส่งฟอร์ม
-        }, 3000); // เวลาแสดง popup (3 วินาที)
+            document.getElementById('matchForm').submit();
+        }, 3000); // เวลาแสดง Popup (3 วินาที)
     });
 
     document.getElementById('closePopup').addEventListener('click', function () {
-        document.getElementById('popup').classList.add('hidden'); // ซ่อน popup
+        document.getElementById('popup').classList.add('hidden'); // ซ่อน Popup
+        document.getElementById('zodiacCard').classList.remove('hidden'); // แสดงการ์ดราศีกลับมา
     });
 
     function getZodiacSign(dateString) {

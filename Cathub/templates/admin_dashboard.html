@@ -5,27 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-[#E9F5F5] min-h-screen flex">
     <!-- Sidebar -->
-    <div class="w-64 bg-gradient-to-b from-[#005F73] to-[#0A9396] shadow-lg p-6 rounded-r-2xl">
-        <h2 class="text-2xl font-bold text-white mb-6">เมนูแอดมิน</h2>
-        <ul class="space-y-3">
-            <li>
-                <a href="#user-management" onclick="showSection('user-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
-                    จัดการผู้ใช้งาน
-                </a>
-            </li>
-            <li>
-                <a href="#cat-management" onclick="showSection('cat-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
-                    จัดการแมว
-                </a>
-            </li>
-        </ul>
+    <div class="w-64 bg-gradient-to-b from-[#005F73] to-[#0A9396] shadow-lg p-6 rounded-r-2xl flex flex-col justify-between min-h-screen">
+        <div>
+            <h2 class="text-2xl font-bold text-white mb-6">เมนูแอดมิน</h2>
+            <ul class="space-y-3">
+                <li>
+                    <a href="#user-management" onclick="showSection('user-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
+                        จัดการผู้ใช้งาน
+                    </a>
+                </li>
+                <li>
+                    <a href="#cat-management" onclick="showSection('cat-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
+                        จัดการแมว
+                    </a>
+                </li>
+                <li>
+                    <a href="#stats-graphs" onclick="showSection('stats-graphs')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
+                        สถิติและกราฟ
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ปุ่มกลับหน้า Home ด้านล่างสุด -->
+        <div class="mt-auto">
+            <a href="{% url 'Home' %}" class="block text-center text-lg font-bold bg-[#EE9B00] text-white px-4 py-3 rounded-xl shadow-lg hover:bg-[#CA6702] transition duration-300">
+                กลับหน้า Home
+            </a>
+        </div>
     </div>
+
+
 
     <!-- Main Content -->
     <div class="flex-1 p-8">
+        <!-- ปุ่มกลับไปหน้า Home -->
         <h1 class="text-3xl font-bold text-[#005F73] mb-6">Admin Dashboard</h1>
 
         <!-- Summary Section -->
@@ -45,7 +63,7 @@
         </div>
 
         <!-- User Management -->
-        <div id="user-management" class="content-section bg-white rounded-lg shadow-lg p-6 animate-fade-in">
+        <div id="user-management" class="content-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการผู้ใช้งาน</h2>
             <a href="{% url 'add_user' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มผู้ใช้งาน</a>
             <ul class="divide-y">
@@ -64,7 +82,7 @@
         </div>
 
         <!-- Cat Management -->
-        <div id="cat-management" class="content-section bg-white rounded-lg shadow-lg p-6 animate-fade-in hidden">
+        <div id="cat-management" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">
             <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการแมว</h2>
             <a href="{% url 'add_cat' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มแมว</a>
             <ul class="divide-y">
@@ -81,18 +99,74 @@
                 {% endfor %}
             </ul>
         </div>
-    </div>
 
-    <script>
-        function showSection(sectionId) {
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.add('hidden');
+
+        <!-- Graph Section -->
+        <div id="stats-graphs" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">📊 สถิติและกราฟ</h2>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold text-gray-700 text-center mb-2">📈 ผู้ใช้งานรายวัน (7 วันล่าสุด)</h3>
+                    <canvas id="userChart" width="400" height="300"></canvas>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold text-gray-700 text-center mb-2">🐾 การ Adopt รายวัน (7 วันล่าสุด)</h3>
+                    <canvas id="adoptChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function showSection(sectionId) {
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                document.getElementById(sectionId).classList.remove('hidden');
+            }
+            document.addEventListener('DOMContentLoaded', () => {
+                showSection('user-management');
             });
-            document.getElementById(sectionId).classList.remove('hidden');
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            showSection('user-management');
-        });
-    </script>
+
+            // อ่านค่าจาก JSON ที่แปลงใน Django
+            const dailyUserData = JSON.parse('{{ daily_user_data|safe }}');
+            const dailyAdoptData = JSON.parse('{{ daily_adopt_data|safe }}');
+
+            // ผู้ใช้งานรายวัน (เส้น)
+            new Chart(document.getElementById("userChart"), {
+                type: 'line',
+                data: {
+                    labels: dailyUserData.dates,
+                    datasets: [{
+                        label: 'จำนวนผู้ใช้งาน',
+                        data: dailyUserData.counts,
+                        borderColor: '#0A9396',
+                        backgroundColor: 'rgba(10, 147, 150, 0.2)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                }
+            });
+
+            // การ Adopt (แท่ง)
+            new Chart(document.getElementById("adoptChart"), {
+                type: 'bar',
+                data: {
+                    labels: dailyAdoptData.dates,
+                    datasets: [{
+                        label: 'จำนวนการ Adopt',
+                        data: dailyAdoptData.counts,
+                        backgroundColor: '#94D2BD',
+                        borderColor: '#005F73',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        </script>
+    </div>
 </body>
 </html>

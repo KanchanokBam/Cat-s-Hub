@@ -19,12 +19,12 @@
 
 <!-- Background Section -->
 <div class="container mx-auto text-center">
-    <h1 class="text-5xl font-extrabold text-gray-900 drop-shadow-md">Welcome, {{ user.username }}! 🐾</h1>
+    <h1 class="text-5xl font-extrabold text-gray-900 drop-shadow-md">ยินดีต้อนรับ, {{ user.username }}! 🐾</h1>
 </div>
 
 <!-- Cat Adoption Section -->
 <div class="container mx-auto mt-10 px-6">
-    <h1 class="text-5xl font-bold text-[#9B2226] mb-4">ADOPT CAT!🐱</h1>
+    <h1 class="text-5xl font-bold text-[#9B2226] mb-4">รับเลี้ยงแมว!🐱</h1>
 
     {% if cats %}
     <div x-data="scrollHandler()" x-init="init()" class="relative">
@@ -46,64 +46,24 @@
         </div>
     </div>
     {% else %}
-    <p class="text-center text-gray-500 mt-4">No cats available for adoption at the moment.</p>
+    <p class="text-center text-gray-500 mt-4">ไม่มีแมวสำหรับรับเลี้ยงในตอนนี้</p>
     {% endif %}
 
     <div class="mt-8 text-center">
         <a href="{% url 'adopt' %}" class="bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-orange-600 transition">
-            See All Cats
+            ดูทั้งหมด
         </a>
     </div>
 </div>
 
 <!-- Foundation Section -->
 <div class="container mx-auto mt-16 px-6">
-    <h2 class="text-4xl font-semibold text-center text-gray-800 mb-6">Cat Rescue Foundations in Thailand 🇹🇭</h2>
-    <p class="text-lg text-center text-gray-600 mb-8">These organizations work tirelessly to save and care for stray cats. Support them today! 💖</p>
+    <h2 class="text-4xl font-semibold text-left text-gray-800 mb-6">โครงการที่น่าสนใจ</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <a href="https://www.facebook.com/TheVoiceForAnimals/" target="_blank" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
-            <img src="https://via.placeholder.com/150" alt="The Voice Foundation" class="w-24 h-24 object-cover rounded-full">
-            <h3 class="text-lg font-semibold mt-4">The Voice Foundation</h3>
-        </a>
-        
-        <a href="https://www.soidog.org/" target="_blank" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
-            <img src="https://via.placeholder.com/150" alt="Soi Dog Foundation" class="w-24 h-24 object-cover rounded-full">
-            <h3 class="text-lg font-semibold mt-4">Soi Dog Foundation</h3>
-        </a>
-    </div>
-</div>
-
-<!-- Cat Facts Section -->
-<div class="container mx-auto mt-16 px-6">
-    <h2 class="text-4xl font-semibold text-center text-gray-800 mb-6">Did You Know? 🐱</h2>
-    <p class="text-lg text-center text-gray-600 mb-8">Here are some fun and interesting facts about cats!</p>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
-            <h3 class="text-lg font-bold">Cats Sleep 70% of Their Lives 😴</h3>
-            <p class="text-sm text-gray-600 mt-2">An average cat sleeps for about 13-16 hours a day!</p>
-        </div>
-
-        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
-            <h3 class="text-lg font-bold">Cats Can Make 100+ Sounds 🎶</h3>
-            <p class="text-sm text-gray-600 mt-2">Unlike dogs, cats have over 100 vocal sounds.</p>
-        </div>
-
-        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
-            <h3 class="text-lg font-bold">Whiskers Help in Navigation 🧭</h3>
-            <p class="text-sm text-gray-600 mt-2">Cats use their whiskers to measure gaps and detect changes in their surroundings.</p>
-        </div>
-
-        <div class="bg-white shadow-lg p-6 rounded-xl text-center hover:scale-105 transition duration-300">
-            <h3 class="text-lg font-bold">A Cat’s Nose is Unique! 👃</h3>
-            <p class="text-sm text-gray-600 mt-2">Just like human fingerprints, each cat's nose print is unique.</p>
-        </div>
-    </div>
-
-    <div class="mt-10 text-center">
-        <a href="#" class="bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-orange-600 transition">
-            Read More Facts 🐾
+        <a href="https://www.facebook.com/p/%E0%B9%82%E0%B8%AE%E0%B8%87%E0%B9%80%E0%B8%81%E0%B8%B7%E0%B8%AD%E0%B8%AB%E0%B8%A1%E0%B8%B2-%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%B1%E0%B8%A2%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%A5%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%B5-100076316526329/?locale=th_TH" target="_blank" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
+            <img src="https://scontent.fubp1-1.fna.fbcdn.net/v/t39.30808-6/468536334_591747616712451_102420336079648141_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFjAruCq7JHMQGtoPt5i61crx1SVcN5ZW2vHVJVw3llbdbAj2u7TOqEMBDITqChu213W3M6poYGohfjp97GNHXR&_nc_ohc=_IjYdoQsXO4Q7kNvgG7gxve&_nc_oc=AdgfDoXJBUQfntUwbteZlnkwcoTkZBmeDiQGFMz0tSVF5EUGaO_ph44QkyJTlhuQDnA&_nc_zt=23&_nc_ht=scontent.fubp1-1.fna&_nc_gid=AEPTZwKFVfDb8zZ5TnrHIUq&oh=00_AYGpVjeN1zVmCehKurOa9g5LX4eaxlLy-bq0dGxej__F6w&oe=67D3ACC0" alt="The Voice Foundation" class="w-24 h-24 object-cover rounded-full">
+            <h3 class="text-lg font-semibold mt-4">โฮงเกือหมา มหาวิทยาลัยอุบลราชธานี</h3>
         </a>
     </div>
 </div>

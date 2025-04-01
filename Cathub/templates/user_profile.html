@@ -3,55 +3,54 @@
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
-<!-- Heading -->
-    <!-- Profile Section -->
-    <div class="flex mt-8 mx-8">
-        <!-- User Information -->
-        <div class="w-1/4 bg-white rounded-lg shadow-lg p-6 text-center">
-            <div class="text-center">
-                {% if profile.get_profile_picture %}
-                    <img src="{{ profile.get_profile_picture }}" 
-                         alt="{{ user.username }}" class="w-32 h-32 rounded-full mx-auto shadow-lg">
-                {% else %}
-                    <img src="https://via.placeholder.com/150" 
-                         alt="{{ user.username }}" class="w-32 h-32 rounded-full mx-auto shadow-lg">
-                {% endif %}
-            </div>
-            <h2 class="text-2xl font-bold">{{ user.username }}</h2>
-            <p class="text-gray-600">Email: {{ user.email }}</p>
+<!-- Profile Section -->
+<div class="flex mt-8 mx-8 space-x-8">
+    <!-- User Information -->
+    <div class="w-1/4 bg-white rounded-lg shadow-lg p-6 text-center">
+        <div class="text-center">
+            {% if profile.get_profile_picture %}
+                <img src="{{ profile.get_profile_picture }}" 
+                     alt="{{ user.username }}" class="w-32 h-32 rounded-full mx-auto shadow-lg">
+            {% else %}
+                <img src="https://via.placeholder.com/150" 
+                     alt="{{ user.username }}" class="w-32 h-32 rounded-full mx-auto shadow-lg">
+            {% endif %}
         </div>
-
-        <!-- Catalog Section -->
-        <div class="w-3/4 ml-8">
-            <h2 class="text-2xl font-bold mb-4">Catalog</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for cat in cats %}
-                    <div class="bg-white shadow-lg rounded-lg p-4 flex items-center space-x-4">
-                        <!-- Cat Image -->
-                        <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-20 h-20 rounded-lg">
-                        <div>
-                            <!-- Cat Details -->
-                            <p><strong>Name:</strong> {{ cat.name }}</p>
-                            <p><strong>Age:</strong> {{ cat.age }} month</p>
-                            <p><strong>Breed:</strong> {{ cat.breed|default:"-" }}</p>
-                            <p><strong>Color:</strong> {{ cat.color|default:"-" }}</p>
-                            <!-- Adoption Status -->
-                            <p>
-                                <strong>Status:</strong>
-                                {% if cat.is_adopted %}
-                                    <span class="text-green-500">Adopted</span>
-                                {% else %}
-                                    <span class="text-red-500">Available</span>
-                                {% endif %}
-                            </p>
-                        </div>
-                    </div>
-                {% empty %}
-                    <p class="text-gray-500">No cats posted yet.</p>
-                {% endfor %}
-            </div>
-            
-        </div>
+        <h2 class="text-2xl font-bold mt-4">{{ user.username }}</h2>
+        <p class="text-gray-600"><strong>Email:</strong> {{ user.email }}</p>
+        <p class="text-gray-600"><strong>Phone:</strong> {{ profile.phone|default:"Not available" }}</p>
+        <p class="text-gray-600"><strong>LINE:</strong> {{ profile.line|default:"Not available" }}</p>
     </div>
 
+    <!-- Catalog Section -->
+    <div class="w-3/4">
+        <h2 class="text-2xl font-bold mb-4">Catalog</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for cat in cats %}
+                <div class="bg-white shadow-lg rounded-lg p-4 flex items-center space-x-4">
+                    <!-- Cat Image -->
+                    <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-20 h-20 rounded-lg">
+                    <div>
+                        <!-- Cat Details -->
+                        <p><strong>Name:</strong> {{ cat.name }}</p>
+                        <p><strong>Age:</strong> {{ cat.age }} month</p>
+                        <p><strong>Breed:</strong> {{ cat.breed|default:"-" }}</p>
+                        <p><strong>Color:</strong> {{ cat.color|default:"-" }}</p>
+                        <!-- Adoption Status -->
+                        <p>
+                            <strong>Status:</strong>
+                            {% if cat.is_adopted %}
+                                <span class="text-green-500">Adopted</span>
+                            {% else %}
+                                <span class="text-red-500">Available</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-gray-500">No cats posted yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}
