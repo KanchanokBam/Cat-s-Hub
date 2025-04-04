@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มโครงการที่น่าสนใจ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-2xl mx-auto bg-white shadow-xl rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-[#0A9396] mb-4">เพิ่มโครงการที่น่าสนใจ</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">ชื่อโครงการ:</label>
+                {{ form.title }}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">รายละเอียดโครงการ:</label>
+                {{ form.description }}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">ลิงก์ URL:</label>
+                {{ form.url }}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">ภาพโครงการ:</label>
+                {{ form.image }}
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button type="submit" class="bg-[#0A9396] text-white px-6 py-2 rounded-lg hover:bg-[#005F73]">
+                    เพิ่มโครงการ
+                </button>
+                <a href="{% url 'admin_dashboard' %}" class="text-gray-600 hover:text-gray-800">ยกเลิก</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

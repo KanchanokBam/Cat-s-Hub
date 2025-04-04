@@ -14,12 +14,13 @@
 
         <!-- Display Current Image -->
         <div class="mb-4 text-center">
-            {% if cat.get_image_base64 %}
-                <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-32 h-32 rounded-lg mx-auto shadow-md">
+            {% if cat.image %}
+                <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-32 h-32 rounded-lg mx-auto shadow-md">
             {% else %}
                 <img src="https://via.placeholder.com/300" alt="No Image" class="w-32 h-32 rounded-lg mx-auto shadow-md">
             {% endif %}
         </div>
+        
 
         <!-- Form -->
         <form method="post" enctype="multipart/form-data">

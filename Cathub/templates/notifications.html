@@ -5,13 +5,13 @@
 {% block content %}
 <div class="max-w-2xl mx-auto mt-8">
     <div class="flex justify-between items-center mb-4">
-        <h2 class="text-3xl font-bold text-gray-800">🔔 Your Notifications</h2>
+        <h2 class="text-3xl font-bold text-gray-800">🔔 การแจ้งเตือน</h2>
         
         <!-- ปุ่มเคลียร์การแจ้งเตือน -->
         <form action="{% url 'clear_notifications' %}" method="POST">
             {% csrf_token %}
             <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                Clear Notifications
+                ล้างการแจ้งเตือน
             </button>
         </form>
     </div>
@@ -38,11 +38,11 @@
         <div class="mt-3 flex space-x-2">
             <a href="{% url 'approve_contact' notification.contact_request.id %}" 
                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-                Approve
+                ยินยอม
             </a>
             <a href="{% url 'decline_contact' notification.contact_request.id %}" 
                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                Decline
+                ปฏิเสธ
             </a>
         </div>
         {% endif %}
@@ -52,7 +52,7 @@
         <div class="mt-3">
             <a href="{% url 'user_profile' notification.contact_request.cat.user.username %}" 
                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                View Owner's Profile
+                ดูโปรไฟล์เจ้าของแมว
             </a>
         </div>
         {% endif %}
@@ -60,7 +60,7 @@
         <p class="text-sm text-gray-500 mt-1">📅 {{ notification.created_at|date:"d M Y, H:i" }}</p>
     </div>
     {% empty %}
-    <p class="text-gray-500 text-center">No notifications available.</p>
+    <p class="text-gray-500 text-center">ไม่มีการแจ้งเตือน</p>
     {% endfor %}
 </div>
 {% endblock %}

@@ -7,39 +7,16 @@
 <div class="mt-20 flex flex-col items-center">
     <!-- Form Container -->
     <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
-        <h1 class="text-2xl font-bold text-yellow-600 mb-6">Enter your birth date</h1>
+        <h1 class="text-2xl font-bold text-yellow-600 mb-6">กรอกวันเกิด</h1>
         <form method="POST" id="matchForm">
             {% csrf_token %}
             <div class="mb-4">
                 {{ form.birth_date }}
             </div>
             <button type="button" class="w-full py-2 rounded font-bold text-lg bg-red-500 text-white hover:shadow-lg hover:bg-red-600 transition duration-300" id="submitButton">
-                SUBMIT
+                ตกลง
             </button>
         </form>
-    </div>
-
-    <!-- Zodiac Card (แสดงราศีที่ผู้ใช้ได้รับ) -->
-    <div id="zodiacCard" class="hidden bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center mt-8">
-        <h2 class="text-2xl font-bold text-blue-600">Your Zodiac Sign:</h2>
-        <div class="flex flex-col items-center mt-4">
-            <img id="zodiacImage" src="" alt="Zodiac Icon" class="w-16 h-16">
-            <h3 id="zodiacName" class="text-3xl font-bold text-gray-900 mt-2"></h3>
-            <p class="text-gray-700 mt-2">Based on your birth date, your zodiac sign is <span id="zodiacDetail" class="font-semibold"></span>.</p>
-        </div>
-    </div>
-</div>
-
-<!-- Popup -->
-<div id="popup" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden transition-opacity duration-300">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full text-center">
-        <h2 class="text-2xl font-bold text-yellow-600 mb-4">Matching Your Cat...</h2>
-        <p class="text-gray-700">We are finding the best match for your zodiac sign! Have a nice day! 😺</p>
-        <div class="mt-4">
-            <button id="closePopup" class="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300">
-                Close
-            </button>
-        </div>
     </div>
 </div>
 
@@ -50,57 +27,7 @@
             alert("Please enter your birth date.");
             return;
         }
-
-        const zodiac = getZodiacSign(birthDate);
-        document.getElementById('zodiacName').innerText = zodiac.name;
-        document.getElementById('zodiacDetail').innerText = zodiac.name;
-        document.getElementById('zodiacImage').src = zodiac.icon;
-        document.getElementById('zodiacImage').alt = zodiac.name + " Icon";
-        
-        // ซ่อนการ์ดราศีเมื่อแสดง Popup
-        document.getElementById('zodiacCard').classList.add('hidden');
-
-        // แสดง Popup
-        const popup = document.getElementById('popup');
-        popup.classList.remove('hidden');
-
-        // จำลองการโหลด และส่งฟอร์ม
-        setTimeout(() => {
-            document.getElementById('matchForm').submit();
-        }, 3000); // เวลาแสดง Popup (3 วินาที)
+        document.getElementById('matchForm').submit(); 
     });
-
-    document.getElementById('closePopup').addEventListener('click', function () {
-        document.getElementById('popup').classList.add('hidden'); // ซ่อน Popup
-        document.getElementById('zodiacCard').classList.remove('hidden'); // แสดงการ์ดราศีกลับมา
-    });
-
-    function getZodiacSign(dateString) {
-        const date = new Date(dateString);
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const zodiacSigns = [
-            { name: "Capricorn", start: [12, 22], end: [1, 19], icon: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Capricorn_symbol_%28fixed_width%29.svg" },
-            { name: "Aquarius", start: [1, 20], end: [2, 18], icon: "https://upload.wikimedia.org/wikipedia/commons/2/28/Aquarius_symbol_%28fixed_width%29.svg" },
-            { name: "Pisces", start: [2, 19], end: [3, 20], icon: "https://upload.wikimedia.org/wikipedia/commons/f/f7/Pisces_symbol_%28fixed_width%29.svg" },
-            { name: "Aries", start: [3, 21], end: [4, 19], icon: "https://upload.wikimedia.org/wikipedia/commons/5/50/Aries_symbol_%28fixed_width%29.svg" },
-            { name: "Taurus", start: [4, 20], end: [5, 20], icon: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Taurus_symbol_%28fixed_width%29.svg" },
-            { name: "Gemini", start: [5, 21], end: [6, 20], icon: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Gemini_symbol_%28fixed_width%29.svg" },
-            { name: "Cancer", start: [6, 21], end: [7, 22], icon: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Cancer_symbol_%28fixed_width%29.svg" },
-            { name: "Leo", start: [7, 23], end: [8, 22], icon: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Leo_symbol_%28fixed_width%29.svg" },
-            { name: "Virgo", start: [8, 23], end: [9, 22], icon: "https://upload.wikimedia.org/wikipedia/commons/9/96/Virgo_symbol_%28fixed_width%29.svg" },
-            { name: "Libra", start: [9, 23], end: [10, 22], icon: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Libra_symbol_%28fixed_width%29.svg" },
-            { name: "Scorpio", start: [10, 23], end: [11, 21], icon: "https://upload.wikimedia.org/wikipedia/commons/2/29/Scorpio_symbol_%28fixed_width%29.svg" },
-            { name: "Sagittarius", start: [11, 22], end: [12, 21], icon: "https://upload.wikimedia.org/wikipedia/commons/7/74/Sagittarius_symbol_%28fixed_width%29.svg" }
-        ];
-
-        for (let sign of zodiacSigns) {
-            if ((month === sign.start[0] && day >= sign.start[1]) ||
-                (month === sign.end[0] && day <= sign.end[1])) {
-                return sign;
-            }
-        }
-        return { name: "Unknown", icon: "https://via.placeholder.com/80" };
-    }
 </script>
 {% endblock %}

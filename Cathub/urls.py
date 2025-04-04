@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 Cathub = ''
 urlpatterns = [
@@ -18,6 +20,7 @@ urlpatterns = [
     path('statistics/', views.StatisticsView.as_view(), name='statistics'),
     path('find-cat/', views.FindCatView.as_view(), name='find_cat'),
     path('match/', views.MatchView.as_view(), name='match'),
+    path('projects/<int:pk>/', views.ProjectDetailView.as_view(), name='project_detail'),
 
     # Notifications & Contact
     path('notifications/', views.NotificationListView.as_view(), name='notifications'),
@@ -37,4 +40,12 @@ urlpatterns = [
     path('admin-dashboard/delete-user/<int:user_id>/', views.DeleteUserAdminView.as_view(), name='delete_user'),
     path('admin-dashboard/edit/<int:cat_id>/', views.EditCatAdminView.as_view(), name='edit_cat_admin'),
     path('admin-dashboard/delete/<int:cat_id>/', views.DeleteCatAdminView.as_view(), name='admin_delete_cat'),
-]
+    path('admin-dashboard/projects/add/', views.AddProjectAdminView.as_view(), name='admin_add_project'),
+    path('admin-dashboard/projects/edit/<int:project_id>/', views.EditProjectAdminView.as_view(), name='admin_edit_project'),
+    path('admin-dashboard/projects/delete/<int:project_id>/', views.DeleteProjectAdminView.as_view(), name='admin_delete_project'),
+    
+
+
+] 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

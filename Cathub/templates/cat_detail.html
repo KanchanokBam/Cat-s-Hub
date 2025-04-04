@@ -10,22 +10,22 @@
         <!-- Badge for Status -->
         {% if not cat.is_adopted %}
         <div class="absolute top-2 left-2 bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
-            Available
+            ยังไม่มีบ้าน
         </div>
         {% else %}
         <div class="absolute top-2 left-2 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
-            Not Available
+            มีบ้านแล้ว
         </div>
         {% endif %}
 
         <!-- Inner Box -->
         <div class="relative bg-white p-6 rounded-lg shadow-lg flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-10 items-center lg:items-start max-w-4xl">
             <!-- Image Section -->
-            <div class="lg:w-1/3 w-2/3">
-                {% if cat.get_image_base64 %}
-                    <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-auto rounded-lg shadow-md">
+            <div class="w-full h-56 bg-gray-300 rounded-lg overflow-hidden">
+                {% if cat.image %}
+                    <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
                 {% else %}
-                    <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-auto rounded-lg shadow-md">
+                    <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
                 {% endif %}
             </div>
 
@@ -36,16 +36,16 @@
                 
                 <!-- Cat Details -->
                 <ul class="space-y-2 text-gray-700 text-lg">
-                    <li><strong>Age:</strong> {{ cat.age }}</li>
-                    <li><strong>Breed:</strong> {{ cat.breed|default:"-" }}</li>
-                    <li><strong>Color:</strong> {{ cat.color|default:"-" }}</li>
-                    <li><strong>Personality:</strong> {{ cat.personality|default:"Not specified" }}</li>
+                    <li><strong>ช่วงอายุ:</strong> {{ cat.age_group }}</li>
+                    <li><strong>สายพันธุ์:</strong> {{ cat.breed|default:"-" }}</li>
+                    <li><strong>สี:</strong> {{ cat.color|default:"-" }}</li>
+                    <li><strong>นิสัย:</strong> {{ cat.personality|default:"Not specified" }}</li>
                     <li>
                         <strong>Status:</strong> 
                         {% if cat.is_adopted %}
-                            <span class="text-gray-500">Adopted on {{ cat.adopted_date }}</span>
+                            <span class="text-gray-500">อุปการะเมื่อ {{ cat.adopted_date }}</span>
                         {% else %}
-                            <span class="text-red-500">Available for Adoption</span>
+                            <span class="text-red-500">พร้อมให้รับอุปการะ</span>
                         {% endif %}
                     </li>
                 </ul>
@@ -54,9 +54,9 @@
                 <button id="requestContactBtn"
                         data-cat-id="{{ cat.id }}"
                         class="px-6 py-3 bg-[#9B2226] text-white text-lg font-medium rounded-lg hover:bg-[#82201F] transition inline-block shadow-md">
-                    Request Contact
+                    ขอข้อมูลติดต่อ
                 </button>
-                <p id="requestMessage" class="mt-2 text-sm text-gray-600 hidden">Request sent successfully!</p>
+                <p id="requestMessage" class="mt-2 text-sm text-gray-600 hidden">ขอข้อมูลติดต่อแล้ว</p>
 
                 <!-- JavaScript -->
                 <script>

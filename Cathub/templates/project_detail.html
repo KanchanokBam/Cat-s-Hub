@@ -1,0 +1,27 @@
+    {% extends 'base.html' %}
+
+    {% block title %}project.title{% endblock %}
+    
+    {% block content %}
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto p-8">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            {% if project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-72 object-cover">
+            {% else %}
+                <img src="https://via.placeholder.com/800x400" alt="{{ project.title }}" class="w-full h-72 object-cover">
+            {% endif %}
+            <div class="p-6">
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ project.title }}</h1>
+                <p class="text-gray-600">{{ project.description }}</p>
+                {% if project.url %}
+                    <div class="mt-6">
+                        <a href="{{ project.url }}" target="_blank" class="text-blue-500 hover:text-blue-700">เว็บไซต์</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

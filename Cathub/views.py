@@ -10,11 +10,12 @@ from django.contrib import messages
 from django.utils.timezone import now
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.sessions.models import Session
+from django.views.generic.detail import DetailView
 from datetime import date, timedelta
 from django.db.models import Count
-from .models import Cat, UserProfile, User,Notification,ContactRequest
+from .models import Cat, UserProfile, User,Notification,ContactRequest,FeaturedProject
 import json
-from .forms import SignUpForm, AuthenticationForm, CatPostForm, ProfilePictureUpdateForm,BirthDateForm,UserForm, CatForm
+from .forms import SignUpForm, AuthenticationForm, CatPostForm, ProfilePictureUpdateForm,BirthDateForm,UserForm, CatForm,FeaturedProjectForm
 
 class SignUpView(View):
     def get(self, request):
@@ -57,9 +58,27 @@ class HomeView(LoginRequiredMixin, View):
     def get(self, request):
         profile, _ = UserProfile.objects.get_or_create(user=request.user)
         cats = list(Cat.objects.all())
+        projects = FeaturedProject.objects.all()
         import random
         random.shuffle(cats)
-        return render(request, 'home.html', {'profile': profile, 'user': request.user, 'cats': cats[:7]})
+        return render(request, 'home.html', {
+            'profile': profile, 
+            'user': request.user, 
+            'cats': cats[:7],
+            'projects': projects
+        })
+
+class ProjectDetailView(LoginRequiredMixin, DetailView):
+    model = FeaturedProject
+    template_name = 'project_detail.html'
+    context_object_name = 'project'
+
+    # เพิ่มตรงนี้เพื่อส่งข้อมูล profile ไปยัง template
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile, _ = UserProfile.objects.get_or_create(user=self.request.user)
+        context['profile'] = profile
+        return context
 
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
@@ -84,33 +103,33 @@ class ProfilePageView(LoginRequiredMixin, View):
         cat.adopted_date = date.today() if cat.is_adopted else None
         cat.save()
         return redirect('profile')
+    
 class AdoptView(LoginRequiredMixin, View):
     def get(self, request):
         profile = UserProfile.objects.get(user=request.user)
         cats = Cat.objects.all()
-        return render(request, 'adopt.html', {'profile': profile, 'cats': cats})
+        return render(request, 'adopt.html', {
+            'profile': profile,
+            'cats': cats,
+        })
+
 
 class PostCatView(LoginRequiredMixin, View):
     def get(self, request):
         profile = UserProfile.objects.get(user=request.user)
-        form = CatPostForm()
+        form = CatPostForm()  # ฟอร์มที่อัปเดตแล้ว
         return render(request, 'post.html', {'form': form, 'profile': profile})
 
     def post(self, request):
         profile = UserProfile.objects.get(user=request.user)
-        form = CatPostForm(request.POST, request.FILES)
+        form = CatPostForm(request.POST, request.FILES)  # ใช้ฟอร์มที่รับข้อมูลจาก POST
         if form.is_valid():
             cat = form.save(commit=False)
-            cat.user = request.user
-            if cat.personality == '':
-                cat.personality = None
-            image = request.FILES.get('image')
-            if image:
-                cat.save_image(image)
-            else:
-                cat.save()
+            cat.user = request.user  # ตั้งค่าผู้ใช้
+            cat.save()  # บันทึกข้อมูล
             return redirect('adopt')
         return render(request, 'post.html', {'form': form, 'profile': profile})
+
 
 class EditProfileView(LoginRequiredMixin, View):
     def get(self, request):
@@ -120,18 +139,20 @@ class EditProfileView(LoginRequiredMixin, View):
 
     def post(self, request):
         profile, _ = UserProfile.objects.get_or_create(user=request.user)
-        picture_form = ProfilePictureUpdateForm(request.POST, request.FILES)
+        picture_form = ProfilePictureUpdateForm(request.POST, request.FILES)  # ใช้ request.FILES เพื่อรองรับการอัปโหลดไฟล์
         phone = request.POST.get('phone')
         line = request.POST.get('line')
         if picture_form.is_valid():
-            image = request.FILES.get('profile_picture')
+            image = request.FILES.get('profile_picture')  # รับไฟล์ภาพที่อัปโหลด
             if image:
-                profile.save_profile_picture(image)
+                profile.profile_picture = image  # เก็บไฟล์ภาพลงใน profile_picture
         profile.phone = phone
         profile.line = line
-        profile.save()
+        profile.save()  # บันทึกข้อมูลโปรไฟล์
         messages.success(request, 'คุณอัปเดตโปรไฟล์แล้ว')
         return redirect('profile')
+
+
 
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request, username):
@@ -154,13 +175,9 @@ class EditCatView(LoginRequiredMixin, View):
 
     def post(self, request, cat_id):
         cat = get_object_or_404(Cat, id=cat_id, user=request.user)
-        form = CatPostForm(request.POST, request.FILES, instance=cat)
+        form = CatPostForm(request.POST, request.FILES, instance=cat)  
         if form.is_valid():
-            cat = form.save(commit=False)
-            image = request.FILES.get('image')
-            if image:
-                cat.save_image(image)
-            cat.save()
+            cat = form.save()
             return redirect('edit_cat', cat_id=cat.id)
         return render(request, 'edit_cat.html', {'form': form, 'cat': cat})
 
@@ -187,60 +204,76 @@ class FindCatView(LoginRequiredMixin, View):
     def post(self, request):
         profile = UserProfile.objects.get(user=request.user)
         personality = request.POST.get('personality')
-        age = request.POST.get('age')
+        age_group = request.POST.get('age_group')  
         breed = request.POST.get('breed')
         color = request.POST.get('color')
 
         cats = Cat.objects.all()
         scored_cats = []
+
         for cat in cats:
             score = 0
+            
+            # ตรวจสอบ personality
             if personality and personality.lower() in (cat.personality or '').lower():
                 score += 1
-            if age:
-                if age == 'kitten' and cat.age < 1:
+
+            # ตรวจสอบ age_group
+            if age_group:
+                if age_group == 'kitten' and cat.age_group == 'kitten':
                     score += 1
-                elif age == 'adult' and 1 <= cat.age < 7:
+                elif age_group == 'adult' and cat.age_group == 'adult':
                     score += 1
-                elif age == 'senior' and cat.age >= 7:
+                elif age_group == 'senior' and cat.age_group == 'senior':
                     score += 1
+
+            # ตรวจสอบ breed
             if breed and breed.lower() in (cat.breed or '').lower():
                 score += 1
+
+            # ตรวจสอบ color
             if color and color.lower() in (cat.color or '').lower():
                 score += 1
+
+            # เก็บผลคะแนนที่ผ่านเกณฑ์
             scored_cats.append({'cat': cat, 'score': score})
 
+        # กรองแมวที่ได้คะแนนมากกว่าหรือเท่ากับ 3
         scored_cats = [entry for entry in scored_cats if entry['score'] >= 3]
+
+        # จัดลำดับแมวตามคะแนน
         scored_cats.sort(key=lambda x: x['score'], reverse=True)
 
+        # ส่งผลลัพธ์แมวที่ตรงกับคำตอบ
         cat_list = [
             {
                 'id': entry['cat'].id,
                 'name': entry['cat'].name,
-                'age': entry['cat'].age,
+                'age_group': entry['cat'].age_group,  # ใช้ age_group แทน age
                 'breed': entry['cat'].breed or 'Unknown',
                 'color': entry['cat'].color or 'Unknown',
-                'image_url': entry['cat'].get_image_base64(),
+                'image_url': entry['cat'].image.url if entry['cat'].image else None,  # ดึง URL ของรูปภาพจาก ImageField
             }
             for entry in scored_cats
         ]
 
         return JsonResponse({'cats': cat_list})
 
+
 class MatchView(LoginRequiredMixin, View):
     ZODIAC_PERSONALITY_MAP = {
-        'Aries': ['playful', 'adventurous', 'energetic'],
-        'Taurus': ['calm', 'affectionate', 'lazy'],
-        'Gemini': ['curious', 'talkative', 'active'],
-        'Cancer': ['affectionate', 'loyal', 'gentle'],
-        'Leo': ['confident', 'bold', 'attention-seeking'],
-        'Virgo': ['neat', 'smart', 'easygoing'],
-        'Libra': ['friendly', 'peaceful', 'charming'],
-        'Scorpio': ['independent', 'intense', 'unique'],
-        'Sagittarius': ['adventurous', 'playful', 'independent'],
-        'Capricorn': ['calm', 'loyal', 'easygoing'],
-        'Aquarius': ['quirky', 'creative', 'independent'],
-        'Pisces': ['gentle', 'dreamy', 'affectionate'],
+        'เมษ': ['ขี้เล่น', 'กระตือรือร้น'],
+        'พฤษภ': ['สงบ', 'ขี้เกียจ'],
+        'เมถุน': ['อยากรู้อยากเห็น'],
+        'กรกฎ': ['อ่อนโยน'],
+        'สิงห์': ['กล้าหาญ'],
+        'กันย์': ['ฉลาด', 'สบายๆ'],
+        'ตุลย์': ['เป็นมิตร', 'สงบ'],
+        'พิจิก': ['ชอบอิสระ','เป็นตัวของตัวเอง'],
+        'ธนู': ['ขี้เล่น', 'ชอบอิสระ'],
+        'มังกร': ['สงบ','สบายๆ'],
+        'กุมภ์': ['ชอบอิสระ'],
+        'มีน': ['อ่อนโยน'],
     }
 
     ZODIAC_DETAILS = {
@@ -250,17 +283,17 @@ class MatchView(LoginRequiredMixin, View):
 
     def get_zodiac_sign(self, day, month):
         zodiac_ranges = [
-            ((1, 20), (2, 18), 'Aquarius'), ((2, 19), (3, 20), 'Pisces'),
-            ((3, 21), (4, 19), 'Aries'), ((4, 20), (5, 20), 'Taurus'),
-            ((5, 21), (6, 20), 'Gemini'), ((6, 21), (7, 22), 'Cancer'),
-            ((7, 23), (8, 22), 'Leo'), ((8, 23), (9, 22), 'Virgo'),
-            ((9, 23), (10, 22), 'Libra'), ((10, 23), (11, 21), 'Scorpio'),
-            ((11, 22), (12, 21), 'Sagittarius'), ((12, 22), (1, 19), 'Capricorn'),
+            ((1, 20), (2, 18), 'กุมภ์'), ((2, 19), (3, 20), 'มีน'),
+            ((3, 21), (4, 19), 'เมษ'), ((4, 20), (5, 20), 'พฤษภ'),
+            ((5, 21), (6, 20), 'เมถุน'), ((6, 21), (7, 22), 'กรกฎ'),
+            ((7, 23), (8, 22), 'สิงห์'), ((8, 23), (9, 22), 'กันย์'),
+            ((9, 23), (10, 22), 'ตุลย์'), ((10, 23), (11, 21), 'พิจิก'),
+            ((11, 22), (12, 21), 'ธนู'), ((12, 22), (1, 19), 'มังกร'),
         ]
         for start, end, sign in zodiac_ranges:
             if (month == start[0] and day >= start[1]) or (month == end[0] and day <= end[1]):
                 return sign
-        return 'Capricorn'
+        return 'มังกร'
 
     def get(self, request):
         profile = UserProfile.objects.get(user=request.user)
@@ -396,6 +429,9 @@ class AdminDashboardView(AdminRequiredMixin, View):
         adopted_cats_today = Cat.objects.filter(is_adopted=True, adopted_date=today).count()
         total_cats_posted = Cat.objects.count()
 
+        # เพิ่มการดึงข้อมูล FeaturedProject
+        projects = FeaturedProject.objects.all()
+
         daily_users = User.objects.filter(last_login__date__gte=past_7_days[0])\
             .values('last_login__date').annotate(count=Count('id'))
         daily_user_data = {
@@ -416,6 +452,7 @@ class AdminDashboardView(AdminRequiredMixin, View):
             'adopted_cats_today': adopted_cats_today,
             'users_logged_in_today': users_logged_in_today,
             'total_cats_posted': total_cats_posted,
+            'projects': projects,  # เพิ่ม projects
             'daily_user_data': json.dumps(daily_user_data),
             'daily_adopt_data': json.dumps(daily_adopt_data),
         }
@@ -427,14 +464,13 @@ class AddCatAdminView(AdminRequiredMixin, View):
         return render(request, 'admin_add_cat.html', {'form': form})
 
     def post(self, request):
-        form = CatForm(request.POST, request.FILES)
+        form = CatForm(request.POST, request.FILES)  # ใช้ request.FILES เพื่อจัดการกับไฟล์
         if form.is_valid():
             cat = form.save(commit=False)
             cat.user = request.user
-            image = request.FILES.get('image')
+            image = request.FILES.get('image')  # รับไฟล์ภาพจากฟอร์ม
             if image:
-                import base64
-                cat.image_base64 = base64.b64encode(image.read()).decode('utf-8')
+                cat.image = image  # เก็บภาพในฟิลด์ image ของโมเดล
             cat.save()
             messages.success(request, 'Cat added successfully!')
             return redirect('admin_dashboard')
@@ -458,23 +494,32 @@ class EditUserAdminView(AdminRequiredMixin, View):
         user = get_object_or_404(User, id=user_id)
         user_profile, _ = UserProfile.objects.get_or_create(user=user)
         form = UserForm(instance=user)
-        return render(request, 'admin_edit_user.html', {'form': form, 'user': user, 'profile_picture': user_profile.get_profile_picture()})
+        return render(request, 'admin_edit_user.html', {
+            'form': form,
+            'user': user,
+            'profile_picture': user_profile.profile_picture.url if user_profile.profile_picture else None
+        })
 
     def post(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         user_profile, _ = UserProfile.objects.get_or_create(user=user)
         form = UserForm(request.POST, request.FILES, instance=user)
+        
         if form.is_valid():
             user = form.save(commit=False)
+            
+            # ตรวจสอบว่าอัปโหลดรูปใหม่หรือไม่
             if 'profile_picture' in request.FILES:
-                import base64
                 image = request.FILES['profile_picture']
-                user_profile.profile_picture_base64 = base64.b64encode(image.read()).decode('utf-8')
-                user_profile.save()
-            user.save()
+                user_profile.profile_picture = image  # อัปเดตรูปภาพโปรไฟล์
+                user_profile.save()  # บันทึกรูปภาพในโปรไฟล์
+            user.save()  # บันทึกข้อมูลผู้ใช้
+            
             messages.success(request, 'User updated successfully.')
             return redirect('admin_dashboard')
+        
         return render(request, 'admin_edit_user.html', {'form': form, 'user': user})
+
 
 class EditCatAdminView(AdminRequiredMixin, View):
     def get(self, request, cat_id):
@@ -499,7 +544,7 @@ class DeleteUserAdminView(AdminRequiredMixin, View):
     def post(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         user.delete()
-        messages.success(request, 'User deleted successfully.')
+        messages.success(request, 'ลบผู้ใช้เรียบร้อยแล้ว')
         return redirect('admin_dashboard')
 
 class DeleteCatAdminView(AdminRequiredMixin, View):
@@ -508,3 +553,45 @@ class DeleteCatAdminView(AdminRequiredMixin, View):
         cat.delete()
         messages.success(request, f"Cat with ID {cat_id} has been deleted successfully.")
         return redirect('admin_dashboard')
+    
+# เพิ่มโครงการ
+class AddProjectAdminView(AdminRequiredMixin, View):
+    def get(self, request):
+        form = FeaturedProjectForm()
+        return render(request, 'admin_add_project.html', {'form': form})
+
+    def post(self, request):
+        form = FeaturedProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'โครงการถูกเพิ่มเรียบร้อยแล้ว')
+            return redirect('admin_dashboard')
+        return render(request, 'admin_add_project.html', {'form': form})
+
+# แก้ไขโครงการ
+class EditProjectAdminView(AdminRequiredMixin, View):
+    def get(self, request, project_id):
+        project = get_object_or_404(FeaturedProject, id=project_id)
+        form = FeaturedProjectForm(instance=project)
+        return render(request, 'admin_edit_project.html', {'form': form, 'project': project})
+
+    def post(self, request, project_id):
+        project = get_object_or_404(FeaturedProject, id=project_id)
+        form = FeaturedProjectForm(request.POST, request.FILES, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'อัปเดตโครงการเรียบร้อยแล้ว')
+            return redirect('admin_dashboard')
+        return render(request, 'admin_edit_project.html', {'form': form, 'project': project})
+
+# ลบโครงการ
+class DeleteProjectAdminView(AdminRequiredMixin, View):
+    def post(self, request, project_id):
+        project = get_object_or_404(FeaturedProject, id=project_id)
+        project.delete()
+        messages.success(request, 'ลบโครงการเรียบร้อยแล้ว')
+        return redirect('admin_dashboard')
+    
+
+
+

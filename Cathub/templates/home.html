@@ -9,11 +9,11 @@
 <!-- Custom CSS -->
 <style>
     .scrollbar-hide::-webkit-scrollbar {
-        display: none; /* ซ่อน scrollbar สำหรับ Chrome, Safari */
+        display: none;
     }
     .scrollbar-hide {
-        -ms-overflow-style: none;  /* ซ่อน scrollbar สำหรับ IE และ Edge */
-        scrollbar-width: none;  /* ซ่อน scrollbar สำหรับ Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 </style>
 
@@ -32,8 +32,8 @@
             {% for cat in cats %}
             <a href="{% url 'cat_detail' cat.id %}" class="relative min-w-[280px] bg-white shadow-lg rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300">
                 <div class="w-full h-56">
-                    {% if cat.get_image_base64 %}
-                        <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                    {% if cat.image %}
+                        <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
                     {% else %}
                         <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
                     {% endif %}
@@ -56,15 +56,24 @@
     </div>
 </div>
 
-<!-- Foundation Section -->
+<!-- Featured Projects Section -->
 <div class="container mx-auto mt-16 px-6">
     <h2 class="text-4xl font-semibold text-left text-gray-800 mb-6">โครงการที่น่าสนใจ</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <a href="https://www.facebook.com/p/%E0%B9%82%E0%B8%AE%E0%B8%87%E0%B9%80%E0%B8%81%E0%B8%B7%E0%B8%AD%E0%B8%AB%E0%B8%A1%E0%B8%B2-%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%B1%E0%B8%A2%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%A5%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%B5-100076316526329/?locale=th_TH" target="_blank" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
-            <img src="https://scontent.fubp1-1.fna.fbcdn.net/v/t39.30808-6/468536334_591747616712451_102420336079648141_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFjAruCq7JHMQGtoPt5i61crx1SVcN5ZW2vHVJVw3llbdbAj2u7TOqEMBDITqChu213W3M6poYGohfjp97GNHXR&_nc_ohc=_IjYdoQsXO4Q7kNvgG7gxve&_nc_oc=AdgfDoXJBUQfntUwbteZlnkwcoTkZBmeDiQGFMz0tSVF5EUGaO_ph44QkyJTlhuQDnA&_nc_zt=23&_nc_ht=scontent.fubp1-1.fna&_nc_gid=AEPTZwKFVfDb8zZ5TnrHIUq&oh=00_AYGpVjeN1zVmCehKurOa9g5LX4eaxlLy-bq0dGxej__F6w&oe=67D3ACC0" alt="The Voice Foundation" class="w-24 h-24 object-cover rounded-full">
-            <h3 class="text-lg font-semibold mt-4">โฮงเกือหมา มหาวิทยาลัยอุบลราชธานี</h3>
+        {% for project in projects %}
+        <!-- แก้ไขตรง href ให้ลิงก์ไปยังหน้ารายละเอียดภายในเว็บไซต์ -->
+        <a href="{% url 'project_detail' project.id %}" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
+            {% if project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-24 h-24 object-cover rounded-full">
+            {% else %}
+                <img src="https://via.placeholder.com/150" alt="{{ project.title }}" class="w-24 h-24 object-cover rounded-full">
+            {% endif %}
+            <h3 class="text-lg font-semibold mt-4">{{ project.title }}</h3>
         </a>
+        {% empty %}
+        <p class="text-gray-500 text-center">ยังไม่มีโครงการในขณะนี้</p>
+        {% endfor %}
     </div>
 </div>
 

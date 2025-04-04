@@ -5,7 +5,7 @@
 {% block content %}
 <!-- Heading -->
 <div class="container mx-auto mt-10 px-6">
-    <h1 class="text-3xl font-bold text-center text-red-600 mb-6">Your Match Results 🐱✨</h1>
+    <h1 class="text-3xl font-bold text-center text-red-600 mb-6">คุณราศี✨</h1>
 
     <!-- การ์ดแสดงราศีที่ตรงกับผู้ใช้ -->
     <div class="flex justify-center mt-6">
@@ -21,14 +21,14 @@
     </div>
 
     <!-- Matched Cats -->
-    <h2 class="text-2xl font-semibold text-center text-gray-800 mt-10">Cats That Match Your Sign! 😻</h2>
+    <h2 class="text-2xl font-semibold text-center text-gray-800 mt-10">แมวที่เหมาะ 😻</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mt-6">
         {% for cat in matched_cats %}
         <a href="{% url 'cat_detail' cat.id %}" class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition relative group hover:scale-105 duration-300">
             <div class="relative w-full h-48">
-                {% if cat.get_image_base64 %}
-                    <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+                {% if cat.image %}
+                    <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
                 {% else %}
                     <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
                 {% endif %}
@@ -41,7 +41,7 @@
             </div>
         </a>
         {% empty %}
-        <p class="text-gray-500 text-lg col-span-3 text-center">No matching cats found.</p>
+        <p class="text-gray-500 text-lg col-span-3 text-center">ไม่มีแมวที่แมชท์.</p>
         {% endfor %}
     </div>
 </div>

@@ -24,6 +24,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#project-management" onclick="showSection('project-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
+                        จัดการโครงการ
+                    </a>
+                </li>
+                <li>
                     <a href="#stats-graphs" onclick="showSection('stats-graphs')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
                         สถิติและกราฟ
                     </a>
@@ -72,7 +77,11 @@
                     <span class="text-[#005F73]">{{ user.username }}</span>
                     <div>
                         <a href="{% url 'edit_user' user.id %}" class="text-[#0A9396] hover:underline mr-2">แก้ไข</a>
-                        <a href="{% url 'delete_user' user.id %}" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</a>
+                        <!-- ฟอร์มลบผู้ใช้ -->
+                        <form action="{% url 'delete_user' user.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</button>
+                        </form>
                     </div>
                 </li>
                 {% empty %}
@@ -80,6 +89,7 @@
                 {% endfor %}
             </ul>
         </div>
+
 
         <!-- Cat Management -->
         <div id="cat-management" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">
@@ -100,6 +110,27 @@
             </ul>
         </div>
 
+        <!-- Project Management -->
+        <div id="project-management" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการโครงการที่น่าสนใจ</h2>
+            <a href="{% url 'admin_add_project' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มโครงการใหม่</a>
+            <ul class="divide-y">
+                {% for project in projects %}
+                <li class="flex justify-between items-center py-2">
+                    <span class="text-[#005F73]">{{ project.title }}</span>
+                    <div>
+                        <a href="{% url 'admin_edit_project' project.id %}" class="text-[#0A9396] hover:underline mr-2">แก้ไข</a>
+                        <form action="{% url 'admin_delete_project' project.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</button>
+                        </form>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="text-gray-500 text-center py-2">ไม่พบโครงการ</li>
+                {% endfor %}
+            </ul>
+        </div>
 
         <!-- Graph Section -->
         <div id="stats-graphs" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">

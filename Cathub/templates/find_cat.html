@@ -6,17 +6,16 @@
 
     <!-- Main Content -->
     <div class="flex flex-col items-center justify-start mt-4">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Find Your Perfect Cat Match</h1>
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">คัดกรองแมวกัน!</h1>
         
         <form id="catPreferenceForm" method="POST" class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
             {% csrf_token %}
             
             <!-- Step 1: Personality -->
             <div class="step" id="step1">
-                <h2 class="text-xl font-bold">Step 1: Choose Preferred Personality</h2>
-                <label class="text-gray-700">Preferred personality:</label>
+                <label class="text-gray-700">เลือกนิสัย:</label>
                 <select name="personality" class="w-full border-gray-300 rounded-md">
-                    <option value="">-- Select personality --</option>
+                    <option value="">-- นิสัย --</option>
                     {% for personality in personalitys %}
                     <option value="{{ personality }}">{{ personality }}</option>
                     {% endfor %}
@@ -28,13 +27,12 @@
 
             <!-- Step 2: Age -->
             <div class="step hidden" id="step2">
-                <h2 class="text-xl font-bold">Step 2: Choose Age Range</h2>
-                <label class="text-gray-700">Preferred age range:</label>
+                <label class="text-gray-700">เลือกช่วงอายุ:</label>
                 <select name="age" class="w-full border-gray-300 rounded-md">
-                    <option value="">-- Select Age Range --</option>
-                    <option value="kitten">Kitten (under 1 year)</option>
-                    <option value="adult">Adult (1-6 years)</option>
-                    <option value="senior">Senior (7+ years)</option>
+                    <option value="">-- ช่วงอายุ --</option>
+                    <option value="kitten">Kitten </option>
+                    <option value="adult">Adult </option>
+                    <option value="senior">Senior </option>
                 </select>
                 <div class="mt-4">
                     <button type="button" onclick="prevStep(2)" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-red-600 hover:to-red-700 transition-transform transform hover:scale-105">
@@ -48,10 +46,9 @@
 
             <!-- Step 3: Breed -->
             <div class="step hidden" id="step3">
-                <h2 class="text-xl font-bold">Step 3: Choose Preferred Breed</h2>
-                <label class="text-gray-700">Preferred breed:</label>
+                <label class="text-gray-700">เลือกสายพันธุ์</label>
                 <select name="breed" class="w-full border-gray-300 rounded-md">
-                    <option value="">-- Select Breed --</option>
+                    <option value="">สายพันธุ์</option>
                     {% for breed in breeds %}
                     <option value="{{ breed }}">{{ breed }}</option>
                     {% endfor %}
@@ -68,10 +65,9 @@
 
             <!-- Step 4: Color -->
             <div class="step hidden" id="step4">
-                <h2 class="text-xl font-bold">Step 4: Choose Preferred Color</h2>
-                <label class="text-gray-700">Preferred color:</label>
+                <label class="text-gray-700">เลือกสี</label>
                 <select name="color" class="w-full border-gray-300 rounded-md">
-                    <option value="">-- Select Color --</option>
+                    <option value="">สี</option>
                     {% for color in colors %}
                     <option value="{{ color }}">{{ color }}</option>
                     {% endfor %}
@@ -88,12 +84,11 @@
 
             <!-- Step 5: Summary -->
             <div class="step hidden" id="step5">
-                <h2 class="text-xl font-bold">Step 5: Confirm Your Preferences</h2>
                 <div class="bg-gray-100 p-4 rounded-lg">
-                    <p class="text-gray-700"><strong>Preferred Personality:</strong> <span id="summary-personality">-</span></p>
-                    <p class="text-gray-700"><strong>Preferred Age Range:</strong> <span id="summary-age">-</span></p>
-                    <p class="text-gray-700"><strong>Preferred Breed:</strong> <span id="summary-breed">-</span></p>
-                    <p class="text-gray-700"><strong>Preferred Color:</strong> <span id="summary-color">-</span></p>
+                    <p class="text-gray-700"><strong>นิสัย:</strong> <span id="summary-personality">-</span></p>
+                    <p class="text-gray-700"><strong>ช่วงอายุ:</strong> <span id="summary-age">-</span></p>
+                    <p class="text-gray-700"><strong>สายพันธุ์:</strong> <span id="summary-breed">-</span></p>
+                    <p class="text-gray-700"><strong>สี:</strong> <span id="summary-color">-</span></p>
                 </div>
                 <div class="mt-4">
                     <button type="button" onclick="prevStep(5)" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-6 mt-4 rounded-full shadow-lg hover:from-red-600 hover:to-red-700 transition-transform transform hover:scale-105">

@@ -8,6 +8,7 @@
     <h1 class="text-5xl font-bold text-[#9B2226] mb-4">ADOPT CAT! 🐱</h1>
 </header>
 
+
 <!-- Cat Grid Layout -->
 <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 px-8 py-12">
     {% for cat in cats %}
@@ -17,8 +18,8 @@
 
         <!-- Cat Image -->
         <div class="w-full h-56 bg-gray-300 rounded-lg overflow-hidden">
-            {% if cat.get_image_base64 %}
-                <img src="{{ cat.get_image_base64 }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
+            {% if cat.image %}
+                <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-full h-full object-cover">
             {% else %}
                 <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full object-cover">
             {% endif %}
@@ -43,6 +44,7 @@
     <p class="col-span-3 text-center text-gray-500 text-lg">No cats available for adoption at the moment.</p>
     {% endfor %}
 </section>
+
 
 <!-- Floating Action Button -->
 <a href="{% url 'post' %}" class="fixed bottom-8 right-8 bg-[#EE9B00] text-white w-16 h-16 flex items-center justify-center rounded-full shadow-lg hover:bg-[#82201F] transition">
