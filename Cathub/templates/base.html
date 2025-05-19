@@ -1,9 +1,10 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Cat's Hub{% endblock %}</title>
+    <title>{% block title %}{% trans "Cat's Hub" %}{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* ทำให้ Footer อยู่ด้านล่างเนื้อหาเสมอ */
@@ -25,11 +26,11 @@
         <!-- Left Menu -->
         <div class="flex items-center space-x-6">
             <img src="https://img.icons8.com/?size=100&id=tvJZdxwTxU5v&format=png&color=000000" alt="Cat Icon" class="h-12 w-12">
-            <a href="{% url 'Home' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">หน้าหลัก</a>
-            <a href="{% url 'adopt' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">รับเลี้ยงแมว</a>
-            <a href="{% url 'match' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">จับคู่วันเกิด</a>
-            <a href="{% url 'find_cat' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">คัดกรอง</a>
-            <a href="{% url 'statistics' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">สถิติการรับเลี้ยงประจำวัน</a>
+            <a href="{% url 'Home' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">{% trans "หน้าหลัก" %}</a>
+            <a href="{% url 'adopt' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">{% trans "รับเลี้ยงแมว" %}</a>
+            <a href="{% url 'match' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">{% trans "จับคู่วันเกิด" %}</a>
+            <a href="{% url 'find_cat' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">{% trans "คัดกรอง" %}</a>
+            <a href="{% url 'statistics' %}" class="text-lg font-bold hover:text-[#E9D8A6] transition">{% trans "สถิติการรับเลี้ยงประจำวัน" %}</a>
         </div>
 
         <!-- Notification and Profile Section -->
@@ -60,11 +61,11 @@
     </main>
 
     <footer class="bg-[#9B2226] text-[#E9D8A6] text-center py-4">
-        <p>&copy; 2025 My Website</p>
+        <p>&copy; 2025 {% trans "My Website" %}</p>
         {% if user.is_authenticated and user.is_staff %}
             <!-- ลิงก์สำหรับ Admin -->
             <a href="{% url 'admin_dashboard' %}" class="text-[#E9D8A6] hover:text-white font-bold transition">
-                Go to Admin Dashboard
+                {% trans "Go to Admin Dashboard" %}
             </a>
         {% endif %}
     </footer>

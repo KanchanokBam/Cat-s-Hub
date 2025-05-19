@@ -1,0 +1,389 @@
+# django.po
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "ยินดีต้อนรับ"
+msgstr "Welcome"
+
+msgid "บัญชีของคุณถูกสร้างสำเร็จแล้ว!"
+msgstr "Your account has been created successfully!"
+
+msgid "มีข้อผิดพลาดในฟอร์มสมัครของคุณ กรุณาลองใหม่อีกครั้ง"
+msgstr "There was an error in your signup form. Please try again."
+
+msgid "ข้อผิดพลาด"
+msgstr "error"
+
+msgid "วันเกิดของคุณคือ %(day)s/%(month)s/%(year)s"
+msgstr "Your birth date is %(day)s/%(month)s/%(year)s"
+
+msgid "โปรไฟล์ของคุณได้รับการอัปเดตแล้ว!"
+msgstr "Profile updated successfully!"
+
+msgid "โพสต์ของคุณถูกสร้างสำเร็จ"
+msgstr "Post created successfully"
+
+msgid "โพสต์ของคุณถูกบันทึกสำเร็จแล้ว!"
+msgstr "Your post has been saved successfully!"
+
+msgid "ลบโพสต์แมวสำเร็จ"
+msgstr "Successfully deleted the cat post."
+
+msgid "โพสต์ของคุณถูกแก้ไขสำเร็จแล้ว!"
+msgstr "Your post has been edited successfully!"
+
+msgid "กรุณาล็อกอินเพื่อดูหน้านี้"
+msgstr "Please log in to view this page."
+
+msgid "ข้อผิดพลาด: ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง"
+msgstr "Error: Invalid credentials."
+
+msgid "หน้าหลัก"
+msgstr "Home"
+
+msgid "รับเลี้ยงแมว"
+msgstr "Adopt a Cat"
+
+msgid "จับคู่วันเกิด"
+msgstr "Match Birthdate"
+
+msgid "คัดกรอง"
+msgstr "Filter"
+
+msgid "สถิติการรับเลี้ยงประจำวัน"
+msgstr "Daily Adoption Statistics"
+
+msgid "เว็บไซต์ของฉัน"
+msgstr "My Website"
+
+msgid "ไปที่แดชบอร์ดผู้ดูแลระบบ"
+msgstr "Go to Admin Dashboard"
+
+msgid "ภาษาอังกฤษ"
+msgstr "English"
+
+msgid "ภาษาไทย"
+msgstr "Thai"
+
+msgid "ยินดีต้อนรับสู่เว็บไซต์ของเรา!"
+msgstr "Welcome to our website!"
+
+msgid "ชื่อ"
+msgstr "Name"
+
+msgid "ไม่มีแมวสำหรับรับเลี้ยงในตอนนี้"
+msgstr "No cats available for adoption at the moment"
+
+msgid "ดูทั้งหมด"
+msgstr "View all"
+
+msgid "โครงการที่น่าสนใจ"
+msgstr "Featured Projects"
+
+msgid "ยังไม่มีโครงการในขณะนี้"
+msgstr "No projects available at the moment"
+
+msgid "รับเลี้ยงแมว!"
+msgstr "Adopt a cat!"
+
+msgid "มีบ้านแล้ว"
+msgstr "Adopted"
+
+msgid "ยังไม่มีบ้าน"
+msgstr "Available for adoption"
+
+msgid "ขณะนี้ไม่มีแมวให้รับเลี้ยง"
+msgstr "No cats available for adoption at the moment."
+
+msgid "ช่วงอายุ"
+msgstr "Age Group"
+
+msgid "สี"
+msgstr "Color"
+
+msgid "นิสัย"
+msgstr "Personality"
+
+msgid "สถานะ"
+msgstr  "Status"
+
+msgid "ขอข้อมูลติดต่อ"
+msgstr "Request Contact Info"
+
+msgid "ขอข้อมูลติดต่อแล้ว"
+msgstr "Contact info requested"
+
+msgid "ขอแล้ว"
+msgstr "Requested"
+
+msgid "คำขอล้มเหลว"
+msgstr "Request failed"
+
+msgid "สายพันธุ์"
+msgstr "Breed"
+
+msgid "โพสต์แมวของคุณ"
+msgstr "Post Your Cat"
+
+msgid "รูปภาพ"
+msgstr "Image"
+
+msgid "โพสต์"
+msgstr "Post"
+
+msgid "จับคู่"
+msgstr "Match"
+
+msgid "กรอกวันเกิด"
+msgstr "Enter Your Birthday"
+
+msgid "ตกลง"
+msgstr "Submit"
+
+msgid "ผลลัพธ์"
+msgstr "Results"
+
+msgid "คุณราศี✨"
+msgstr "Your Zodiac Sign✨"
+
+msgid "แมวที่เหมาะ 😻"
+msgstr "Compatible Cats 😻"
+
+msgid "ไม่มีแมวที่แมชท์"
+msgstr "No matching cats"
+
+msgid "สถิติ"
+msgstr "Statistics"
+
+msgid "วันนี้เหมี๊ยวๆมีบ้านไปแล้ว"
+msgstr "Today cats have been adopted"
+
+msgid "ตัว"
+msgstr "cats"
+
+msgid "โปรไฟล์"
+msgstr "Profile"
+
+msgid "รูปโปรไฟล์"
+msgstr  "Profile Picture"
+
+msgid  "โทรศัพท์:"
+msgstr "Phone:"
+
+msgid "ไลน์:"
+msgstr "LINE:"
+
+msgid "ไม่มีข้อมูล"
+msgstr "Not available"
+
+msgid "แก้ไขโปรไฟล์"
+msgstr "Edit Profile"
+
+msgid "ออกจากระบบ"
+msgstr "Logout"
+
+msgid "รายการแมว"
+msgstr "Catalog"
+
+msgid "คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้?"
+msgstr "Are you sure you want to delete this post?"
+
+msgid "ลบ"
+msgstr "Delete"
+
+msgid "ทำเครื่องหมายว่ามีบ้านแล้ว"
+msgstr "Mark as Adopted"
+
+msgid "ยังไม่มีแมวที่โพสต์"
+msgstr "No cats posted yet."
+
+msgid "แก้ไข"
+msgstr "Edit"
+
+msgid "ชื่อผู้ใช้ใหม่"
+msgstr "New Username"
+
+msgid  "กรอกชื่อผู้ใช้ใหม่"
+msgstr "Enter new username"
+
+msgid "อัพโหลดรูปโปรไฟล์"
+msgstr "Upload Profile Picture"
+
+msgid "เลือกไฟล์"
+msgstr "Browse"
+
+msgid "กรอกเบอร์โทรศัพท์"
+msgstr "Enter phone number"
+
+msgid "กรอกไลน์ไอดี"
+msgstr "Enter LINE ID"
+
+msgid "บันทึกการเปลี่ยนแปลง"
+msgstr "Save Changes"
+
+msgid  "กลับไปยังโปรไฟล์"
+msgstr "Back to Profile"
+
+msgid  "เบอร์โทรศัพท์"
+msgstr "Phone Number"
+
+msgid  "ไลน์ไอดี"
+msgstr "LINE ID"
+
+msgid "แดชบอร์ดแอดมิน"
+msgstr "Admin Dashboard"
+
+msgid "เมนูแอดมิน"
+msgstr "Admin Menu"
+
+msgid "จัดการผู้ใช้งาน"
+msgstr "User Management"
+
+msgid "จัดการแมว"
+msgstr "Cat Management"
+
+msgid "จัดการโครงการ"
+msgstr "Project Management"
+
+msgid "สถิติและกราฟ"
+msgstr "Statistics and Graphs"
+
+msgid "กลับหน้า Home"
+msgstr "Back to Home"
+
+msgid "แมวถูก Adopt วันนี้"
+msgstr "Cats Adopted Today"
+
+msgid "ผู้ใช้งานวันนี้"
+msgstr "Users Today"
+
+msgid "แมวทั้งหมดในระบบ"
+msgstr "Total Cats in System"
+
+msgid "คุณแน่ใจหรือไม่?"
+msgstr "Are you sure?"
+
+msgid "เพิ่มผู้ใช้งาน"
+msgstr "Add User"
+
+msgid "ไม่พบผู้ใช้งาน"
+msgstr "No users found"
+
+msgid "เพิ่มแมว"
+msgstr "Add Cat"
+
+msgid "ไม่พบแมว"
+msgstr "No cats found"
+
+msgid "จัดการโครงการที่น่าสนใจ"
+msgstr "Manage Interesting Projects"
+
+msgid "เพิ่มโครงการใหม่"
+msgstr "Add New Project"
+
+msgid "ไม่พบโครงการ"
+msgstr "No projects found"
+
+msgid "📊 สถิติและกราฟ"
+msgstr "📊 Statistics and Graphs"
+
+msgid "📈 ผู้ใช้งานรายวัน (7 วันล่าสุด)"
+msgstr "📈 Daily Users (Last 7 days)"
+
+msgid "🐾 การ Adopt รายวัน (7 วันล่าสุด)"
+msgstr "🐾 Daily Adoptions (Last 7 days)"
+
+msgid "จำนวนผู้ใช้งาน"
+msgstr "Number of Users"
+
+msgid "จำนวนการ Adopt"
+msgstr "Number of Adoptions"
+
+msgid "เพิ่มผู้ใช้ใหม่"
+msgstr "Add New User"
+
+msgid "กรอกข้อมูลเพื่อเพิ่มผู้ใช้งานใหม่"
+msgstr "Enter information to add a new user"
+
+msgid "ชื่อผู้ใช้"
+msgstr "Username"
+
+msgid "กรอกชื่อผู้ใช้"
+msgstr "Enter username"
+
+msgid "อีเมล"
+msgstr "Email"
+
+msgid "กรอกอีเมล"
+msgstr "Enter email"
+
+msgid "รหัสผ่าน"
+msgstr "Password"
+
+msgid "กรอกรหัสผ่าน"
+msgstr "Enter password"
+
+msgid "ยืนยันรหัสผ่าน"
+msgstr "Confirm Password"
+
+msgid "ยืนยันรหัสผ่านอีกครั้ง"
+msgstr "Confirm password again"
+
+msgid "กำหนดเป็นเจ้าหน้าที่"
+msgstr "Set as Staff"
+
+msgid "ยกเลิก"
+msgstr "Cancel"
+
+msgid "เพิ่มแมวใหม่"
+msgstr "Add New Cat"
+
+msgid "ชื่อแมว"
+msgstr "Cat Name"
+
+msgid "กรอกชื่อแมว"
+msgstr "Enter Cat Name"
+
+msgid "อัพโหลดรูปแมว"
+msgstr "Upload Cat Image"
+
+msgid "หรือลากและวาง"
+msgstr "or Drag and Drop"
+
+msgid "กรอกสายพันธุ์"
+msgstr "Enter Breed"
+
+msgid "กลับสู่แดชบอร์ด"
+msgstr "Back to Dashboard"
+
+msgid "เพิ่มโครงการที่น่าสนใจ"
+msgstr "Add Interesting Project"
+
+msgid "ชื่อโครงการ"
+msgstr "Project Name"
+
+msgid "กรอกชื่อโครงการ"
+msgstr "Enter Project Name"
+
+msgid "รายละเอียดโครงการ"
+msgstr "Project Description"
+
+msgid "กรอกรายละเอียดโครงการ"
+msgstr "Enter Project Description"
+
+msgid "ลิงก์ URL"
+msgstr "URL Link"
+
+msgid "กรอก URL โครงการ"
+msgstr "Enter Project URL"
+
+msgid "ภาพโครงการ"
+msgstr "Project Image"
+
+msgid "เพิ่มโครงการ"
+msgstr "Add Project"
+
+msgid "อายุ"
+msgstr "Age"

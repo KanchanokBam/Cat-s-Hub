@@ -16,6 +16,16 @@ from django.db.models import Count
 from .models import Cat, UserProfile, User,Notification,ContactRequest,FeaturedProject
 import json
 from .forms import SignUpForm, AuthenticationForm, CatPostForm, ProfilePictureUpdateForm,BirthDateForm,UserForm, CatForm,FeaturedProjectForm
+from django.utils import translation
+from django.utils.translation import gettext as _
+
+
+def set_language(request):
+    language = request.POST.get('language')  # รับค่าภาจาก form
+    translation.activate(language)  # ใช้งานภาษาใหม่
+    request.session['django_language'] = language  # เก็บภาษาลงใน session
+    return redirect(request.META.get('HTTP_REFERER', '/'))  # เปลี่ยนเส้นทางไปหน้าก่อนหน้า
+
 
 class SignUpView(View):
     def get(self, request):
@@ -27,10 +37,10 @@ class SignUpView(View):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, 'คุณลงทะเบียนสำเร็จ!')
+            messages.success(request, _('คุณลงทะเบียนสำเร็จ!'))
             return redirect('signin')
         else:
-            messages.error(request, 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง')
+            messages.error(request, _('เกิดข้อผิดพลาด กรุณาลองอีกครั้ง'))
         return render(request, 'signup.html', {'form': form})
 
 class SignInView(View):
@@ -46,7 +56,7 @@ class SignInView(View):
                 login(request, user)
                 return redirect('/')
             else:
-                messages.error(request, 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
+                messages.error(request, _('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'))
         return render(request, 'signin.html', {'form': form})
 
 class LogoutView(View):
@@ -149,7 +159,7 @@ class EditProfileView(LoginRequiredMixin, View):
         profile.phone = phone
         profile.line = line
         profile.save()  # บันทึกข้อมูลโปรไฟล์
-        messages.success(request, 'คุณอัปเดตโปรไฟล์แล้ว')
+        messages.success(request, _('คุณอัปเดตโปรไฟล์แล้ว'))
         return redirect('profile')
 
 
@@ -348,7 +358,7 @@ class RequestContactView(LoginRequiredMixin, View):
         contact_request = ContactRequest.objects.create(user=user, cat=cat)
         Notification.objects.create(
             user=owner,
-            message=f"{user.username} has requested the contact details for your cat {cat.name}.",
+            message=f"{user.username} ได้ขอข้อมูลติดต่อสำหรับแมวของคุณ {cat.name}.",
             contact_request=contact_request
         )
         return JsonResponse({'success': True})
@@ -364,7 +374,7 @@ class ApproveContactView(LoginRequiredMixin, View):
         contact_request = get_object_or_404(ContactRequest, id=contact_request_id, cat__user=request.user)
 
         if contact_request.status != 'pending':
-            messages.error(request, "This request has already been processed.")
+            messages.error(request, _("คำขอนี้ได้รับการดำเนินการแล้ว"))
             return redirect('profile')  # << เปลี่ยนเป็น redirect หน้าโปรไฟล์
 
         contact_request.status = 'approved'
@@ -374,38 +384,38 @@ class ApproveContactView(LoginRequiredMixin, View):
         Notification.objects.create(
             user=contact_request.user,
             contact_request=contact_request,
-            message=f"ข้อมูลติดต่อสำหรับคุณ {contact_request.cat.name} เบอร์โทร - {owner_profile.phone or 'Not available'}, ไลน์ - {owner_profile.line or 'Not available'}"
+            message=f"ข้อมูลติดต่อสำหรับคุณ {contact_request.cat.name} เบอร์โทร - {owner_profile.phone or 'ไม่พร้อมใช้งาน'}, ไลน์ - {owner_profile.line or 'ไม่พร้อมใช้งาน'}"
         )
 
-        messages.success(request, "การขอข้อมูลได้รับการยืนยันแล้ว")
+        messages.success(request, _("การขอข้อมูลได้รับการยืนยันแล้ว"))
         return redirect('profile') 
 
 class DeclineContactView(LoginRequiredMixin, View):
     def post(self, request, contact_request_id):
         contact_request = get_object_or_404(ContactRequest, id=contact_request_id, cat__user=request.user)
         if contact_request.status != 'pending':
-            messages.error(request, "This request has already been processed.")
+            messages.error(request, _("คำขอนี้ได้รับการดำเนินการแล้ว"))
             return redirect('notifications')
         contact_request.status = 'declined'
         contact_request.save()
         Notification.objects.create(
             user=contact_request.user,
             contact_request=contact_request,
-            message=f"Your contact request for {contact_request.cat.name} has been declined."
+            message=f"คำขอข้อมูลติดต่อของคุณสำหรับ {contact_request.cat.name} ถูกปฏิเสธ"
         )
-        messages.success(request, "Contact request declined successfully.")
+        messages.success(request, _("คำขอข้อมูลติดต่อถูกปฏิเสธเรียบร้อยแล้ว"))
         return redirect('notifications')
 
 class ViewContactInfoView(LoginRequiredMixin, View):
     def get(self, request, request_id):
         contact_request = get_object_or_404(ContactRequest, id=request_id, user=request.user)
         if contact_request.status != 'approved':
-            return JsonResponse({'error': 'Contact request has not been approved yet.'}, status=403)
+            return JsonResponse({'error': _('คำขอข้อมูลติดต่อยังไม่ได้รับการอนุมัติ')}, status=403)
         owner_profile = contact_request.cat.user.profile
         return JsonResponse({
             'owner_name': contact_request.cat.user.username,
-            'phone': owner_profile.phone or 'Not available',
-            'line': owner_profile.line or 'Not available'
+            'phone': owner_profile.phone or 'ไม่พร้อมใช้งาน',
+            'line': owner_profile.line or 'ไม่พร้อมใช้งาน'
         })
 
 class AdminRequiredMixin(UserPassesTestMixin):
@@ -413,7 +423,7 @@ class AdminRequiredMixin(UserPassesTestMixin):
         return self.request.user.is_staff or self.request.user.is_superuser
 
     def handle_no_permission(self):
-        raise PermissionDenied("You do not have permission to access this page.")
+        raise PermissionDenied(_("คุณไม่มีสิทธิ์เข้าถึงหน้านี้"))
 
 class AdminDashboardView(AdminRequiredMixin, View):
     def get(self, request):
@@ -472,7 +482,7 @@ class AddCatAdminView(AdminRequiredMixin, View):
             if image:
                 cat.image = image  # เก็บภาพในฟิลด์ image ของโมเดล
             cat.save()
-            messages.success(request, 'Cat added successfully!')
+            messages.success(request, _('เพิ่มแมวแล้ว'))
             return redirect('admin_dashboard')
         return render(request, 'admin_add_cat.html', {'form': form})
 
@@ -485,7 +495,7 @@ class AddUserAdminView(AdminRequiredMixin, View):
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'User added successfully!')
+            messages.success(request, _('เพิ่มผู้ใช้แล้ว'))
             return redirect('admin_dashboard')
         return render(request, 'admin_add_user.html', {'form': form})
 
@@ -515,7 +525,7 @@ class EditUserAdminView(AdminRequiredMixin, View):
                 user_profile.save()  # บันทึกรูปภาพในโปรไฟล์
             user.save()  # บันทึกข้อมูลผู้ใช้
             
-            messages.success(request, 'User updated successfully.')
+            messages.success(request, _('อัปเดตผู้ใช้งานแล้ว'))
             return redirect('admin_dashboard')
         
         return render(request, 'admin_edit_user.html', {'form': form, 'user': user})
@@ -536,7 +546,7 @@ class EditCatAdminView(AdminRequiredMixin, View):
             if image:
                 cat.save_image(image)
             cat.save()
-            messages.success(request, 'Cat updated successfully.')
+            messages.success(request, _('อัปเดตแมวแล้ว.'))
             return redirect('admin_dashboard')
         return render(request, 'admin_edit_cat.html', {'form': form, 'cat': cat})
 
@@ -544,14 +554,14 @@ class DeleteUserAdminView(AdminRequiredMixin, View):
     def post(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         user.delete()
-        messages.success(request, 'ลบผู้ใช้เรียบร้อยแล้ว')
+        messages.success(request, _('ลบผู้ใช้เรียบร้อยแล้ว'))
         return redirect('admin_dashboard')
 
 class DeleteCatAdminView(AdminRequiredMixin, View):
     def post(self, request, cat_id):
         cat = get_object_or_404(Cat, id=cat_id)
         cat.delete()
-        messages.success(request, f"Cat with ID {cat_id} has been deleted successfully.")
+        messages.success(request, f"แมวไอดี {cat_id} ได้ลบแล้ว")
         return redirect('admin_dashboard')
     
 # เพิ่มโครงการ
@@ -564,11 +574,10 @@ class AddProjectAdminView(AdminRequiredMixin, View):
         form = FeaturedProjectForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, 'โครงการถูกเพิ่มเรียบร้อยแล้ว')
+            messages.success(request, _('โครงการถูกเพิ่มเรียบร้อยแล้ว'))
             return redirect('admin_dashboard')
         return render(request, 'admin_add_project.html', {'form': form})
 
-# แก้ไขโครงการ
 class EditProjectAdminView(AdminRequiredMixin, View):
     def get(self, request, project_id):
         project = get_object_or_404(FeaturedProject, id=project_id)
@@ -580,16 +589,15 @@ class EditProjectAdminView(AdminRequiredMixin, View):
         form = FeaturedProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
-            messages.success(request, 'อัปเดตโครงการเรียบร้อยแล้ว')
+            messages.success(request, _('อัปเดตโครงการเรียบร้อยแล้ว'))
             return redirect('admin_dashboard')
         return render(request, 'admin_edit_project.html', {'form': form, 'project': project})
 
-# ลบโครงการ
 class DeleteProjectAdminView(AdminRequiredMixin, View):
     def post(self, request, project_id):
         project = get_object_or_404(FeaturedProject, id=project_id)
         project.delete()
-        messages.success(request, 'ลบโครงการเรียบร้อยแล้ว')
+        messages.success(request, _('ลบโครงการเรียบร้อยแล้ว'))
         return redirect('admin_dashboard')
     
 

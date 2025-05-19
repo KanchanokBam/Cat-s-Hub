@@ -1,20 +1,21 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Match{% endblock %}
+{% block title %}{% trans "จับคู่" %}{% endblock %}
 
 {% block content %}
 <!-- Main Section -->
 <div class="mt-20 flex flex-col items-center">
     <!-- Form Container -->
     <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
-        <h1 class="text-2xl font-bold text-yellow-600 mb-6">กรอกวันเกิด</h1>
+        <h1 class="text-2xl font-bold text-yellow-600 mb-6">{% trans "กรอกวันเกิด" %}</h1>
         <form method="POST" id="matchForm">
             {% csrf_token %}
             <div class="mb-4">
                 {{ form.birth_date }}
             </div>
             <button type="button" class="w-full py-2 rounded font-bold text-lg bg-red-500 text-white hover:shadow-lg hover:bg-red-600 transition duration-300" id="submitButton">
-                ตกลง
+                {% trans "ตกลง" %}
             </button>
         </form>
     </div>

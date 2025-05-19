@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}{{ cat.name }}{% endblock %}
 
@@ -10,11 +11,11 @@
         <!-- Badge for Status -->
         {% if not cat.is_adopted %}
         <div class="absolute top-2 left-2 bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
-            ยังไม่มีบ้าน
+            {% trans "ยังไม่มีบ้าน" %}
         </div>
         {% else %}
         <div class="absolute top-2 left-2 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
-            มีบ้านแล้ว
+            {% trans "มีบ้านแล้ว" %}
         </div>
         {% endif %}
 
@@ -29,6 +30,7 @@
                 {% endif %}
             </div>
 
+
             <!-- Details Section -->
             <div class="lg:w-2/3 w-full space-y-4">
                 <!-- Cat Name -->
@@ -36,16 +38,16 @@
                 
                 <!-- Cat Details -->
                 <ul class="space-y-2 text-gray-700 text-lg">
-                    <li><strong>ช่วงอายุ:</strong> {{ cat.age_group }}</li>
-                    <li><strong>สายพันธุ์:</strong> {{ cat.breed|default:"-" }}</li>
-                    <li><strong>สี:</strong> {{ cat.color|default:"-" }}</li>
-                    <li><strong>นิสัย:</strong> {{ cat.personality|default:"Not specified" }}</li>
+                    <li><strong>{% trans "ช่วงอายุ" %}:</strong> {{ cat.age_group }}</li>
+                    <li><strong>{% trans "สายพันธุ์" %}:</strong> {{ cat.breed|default:"-" }}</li>
+                    <li><strong>{% trans "สี" %}:</strong> {{ cat.color|default:"-" }}</li>
+                    <li><strong>{% trans "นิสัย" %}:</strong> {{ cat.personality|default:"Not specified" }}</li>
                     <li>
-                        <strong>Status:</strong> 
+                        <strong>{% trans "สถานะ" %}:</strong> 
                         {% if cat.is_adopted %}
-                            <span class="text-gray-500">อุปการะเมื่อ {{ cat.adopted_date }}</span>
+                            <span class="text-gray-500">{% trans "อุปการะเมื่อ" %} {{ cat.adopted_date }}</span>
                         {% else %}
-                            <span class="text-red-500">พร้อมให้รับอุปการะ</span>
+                            <span class="text-red-500">{% trans "พร้อมให้รับอุปการะ" %}</span>
                         {% endif %}
                     </li>
                 </ul>

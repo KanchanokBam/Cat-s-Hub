@@ -1,41 +1,43 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}{% trans "โปรไฟล์" %}{% endblock %}
 
 {% block content %}
+{% trans "ไม่มีข้อมูล" as no_data %}
 <!-- Profile and Catalog Section -->
 <div class="flex flex-col md:flex-row justify-center items-start mt-10 space-x-8 px-8">
     <!-- Profile Card -->
     <div class="bg-white shadow-lg rounded-lg p-8 w-full md:w-1/3 text-center">
         <div class="mb-4">
             {% if profile.get_profile_picture %}
-                <img src="{{ profile.get_profile_picture }}" alt="Profile Picture" class="w-32 h-32 rounded-full mx-auto shadow-lg">
+                <img src="{{ profile.get_profile_picture }}" alt="{% trans "รูปโปรไฟล์" %}" class="w-32 h-32 rounded-full mx-auto shadow-lg">
             {% else %}
-                <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="w-32 h-32 rounded-full mx-auto shadow-lg">
+                <img src="https://via.placeholder.com/150" alt="{% trans "รูปโปรไฟล์พื้นฐาน" %}" class="w-32 h-32 rounded-full mx-auto shadow-lg">
             {% endif %}
         </div>
         <h2 class="text-2xl font-bold text-gray-800">{{ user.username }}</h2>
         <p class="text-gray-600">{{ user.email }}</p>
         
         <div class="mt-4 bg-gray-100 p-4 rounded-lg shadow-md text-left">
-            <p class="text-gray-700"><strong>Phone:</strong> {{ profile.phone|default:"Not available" }}</p>
-            <p class="text-gray-700"><strong>LINE:</strong> {{ profile.line|default:"Not available" }}</p>
+            <p class="text-gray-700"><strong>{% trans "โทรศัพท์:" %}</strong> {{ profile.phone|default:no_data }}</p>
+            <p class="text-gray-700"><strong>{% trans "ไลน์:" %}</strong> {{ profile.line|default:no_data }}</p>
         </div>
 
         <div class="mt-6 space-y-2">
             <a href="{% url 'edit_profile' %}" class="block bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600">
-                Edit Profile
+                {% trans "แก้ไขโปรไฟล์" %}
             </a>
             <a href="{% url 'logout' %}"
                class="block bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600">
-                Logout
+                {% trans "ออกจากระบบ" %}
             </a>
         </div>
     </div>
 
     <!-- Catalog Section -->
     <div class="w-full md:w-2/3">
-        <h2 class="text-2xl font-bold mb-4">Catalog</h2>
+        <h2 class="text-2xl font-bold mb-4">{% trans "รายการแมว" %}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {% for cat in cats %}
             <div class="bg-white rounded-lg shadow-lg p-4 flex space-x-4 items-center">
@@ -46,26 +48,26 @@
                     {% else %}
                         <img src="https://via.placeholder.com/300" alt="{{ cat.name }}" class="w-full h-full rounded-lg object-cover">
                     {% endif %}
-
                 </div>
                 <!-- Cat Details -->
                 <div class="flex-1">
-                    <p><strong>Name:</strong> {{ cat.name }}</p>
-                    <p><strong>Age:</strong> {{ cat.age_group }} </p>
-                    <p><strong>Breed:</strong> {{ cat.breed|default:"-" }}</p>
-                    <p><strong>Color:</strong> {{ cat.color|default:"-" }}</p>
+                    <p><strong>{% trans "ชื่อ" %}</strong> {{ cat.name }}</p>
+                    <p><strong>{% trans "อายุ" %}</strong> {{ cat.age_group }} </p>
+                    <p><strong>{% trans "สายพันธุ์" %}</strong> {{ cat.breed|default:"-" }}</p>
+                    <p><strong>{% trans "สี" %}</strong> {{ cat.color|default:"-" }}</p>
                 </div>
                 <!-- Buttons Section -->
                 <div class="flex space-x-2">
                     <!-- Edit Button -->
                     <a href="{% url 'edit_cat' cat.id %}" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">
-                        Edit
+                        {% trans "แก้ไข" %}
                     </a>
                     <!-- Delete Button -->
-                    <form action="{% url 'delete_cat' cat.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                    {% trans "คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้?" as confirm_message %}
+                    <form action="{% url 'delete_cat' cat.id %}" method="post" onsubmit="return confirm('{{ confirm_message }}');">
                         {% csrf_token %}
                         <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
-                            Delete
+                            {% trans "ลบ" %}
                         </button>
                     </form>
                     <!-- Toggle Adopted Status -->
@@ -76,16 +78,16 @@
                                 class="px-4 py-2 text-white rounded-lg transition 
                                 {% if cat.is_adopted %} bg-green-500 hover:bg-green-600 {% else %} bg-red-500 hover:bg-red-600 {% endif %}">
                             {% if cat.is_adopted %}
-                                Adopted
+                                {% trans "มีบ้านแล้ว" %}
                             {% else %}
-                                Mark as Adopted
+                                {% trans "ทำเครื่องหมายว่ามีบ้านแล้ว" %}
                             {% endif %}
                         </button>
                     </form>
                 </div>
             </div>
             {% empty %}
-                <p class="text-gray-500 col-span-2">No cats posted yet.</p>
+                <p class="text-gray-500 col-span-2">{% trans "ยังไม่มีแมวที่โพสต์" %}</p>
             {% endfor %}
         </div>
     </div>

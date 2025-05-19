@@ -68,6 +68,22 @@ class CatPostForm(forms.ModelForm):
             'color': forms.TextInput(attrs={'class': 'w-full border border-gray-300 rounded px-4 py-2', 'placeholder': 'Color'}),
         }
 
+class CatForm(forms.ModelForm):
+    image = forms.ImageField(required=False)
+     
+
+    class Meta:
+        model = Cat
+        fields = ['name', 'age_group', 'breed', 'color', 'personality', 'image']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'age_group': forms.Select(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'breed': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'color': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            'personality': forms.Textarea(attrs={'class': 'border rounded px-3 py-2 w-full'}), 
+        }
+
+
 
 
 
@@ -87,24 +103,9 @@ class ProfilePictureUpdateForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = []  # ไม่ต้องระบุ fields อื่น เพราะจะจัดการผ่าน ImageField
+        fields = [] 
 
 
-
-
-class CatForm(forms.ModelForm):
-    image = forms.ImageField(required=False)
-
-    class Meta:
-        model = Cat
-        fields = ['name', 'age_group', 'breed', 'color', 'personality', 'image']  # เปลี่ยนจาก 'age' เป็น 'age_group'
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
-            'age_group': forms.Select(attrs={'class': 'border rounded px-3 py-2 w-full'}),
-            'breed': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
-            'color': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
-            'personality': forms.Textarea(attrs={'class': 'border rounded px-3 py-2 w-full'}),
-        }
 
 
 class UserForm(forms.ModelForm):

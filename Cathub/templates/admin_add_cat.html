@@ -1,26 +1,151 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Cat</title>
+    <title>{% trans "เพิ่มแมวใหม่" %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .form-card {
+            background-color: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            transition: transform 0.3s ease;
+        }
+        .form-card:hover {
+            transform: translateY(-5px);
+        }
+        .input-field {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .input-field:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+        .save-btn {
+            background: linear-gradient(to right, #3B82F6, #2563EB);
+            transition: all 0.3s ease;
+        }
+        .save-btn:hover {
+            background: linear-gradient(to right, #2563EB, #1D4ED8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .back-link {
+            position: relative;
+            display: inline-block;
+        }
+        .back-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3B82F6;
+            transition: width 0.3s ease;
+        }
+        .back-link:hover:after {
+            width: 100%;
+        }
+        .file-upload-btn {
+            transition: all 0.3s ease;
+        }
+        .file-upload-btn:hover {
+            background-color: #f3f4f6;
+        }
+        .form-input-error {
+            color: #DC2626;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
-    <h1 class="text-2xl font-bold mb-6">Add New Cat</h1>
-    <form method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow-md">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">Upload Image:</label>
-            <input type="file" name="image" class="border rounded px-3 py-2 w-full">
-        </div>
-        <div class="flex justify-between items-center">
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                Add Cat
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center min-h-screen py-12 px-4">
+    <div class="form-card p-8 w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">{% trans "เพิ่มแมวใหม่" %}</h2>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-5">
+            {% csrf_token %}
+
+            <!-- Cat Name -->
+            <div>
+                <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">{% trans "ชื่อแมว" %}</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                        </svg>
+                    </div>
+                    <input type="text" id="id_name" name="name" 
+                           class="input-field pl-10 block w-full rounded-lg shadow-sm p-3 focus:outline-none" 
+                           placeholder="{% trans "กรอกชื่อแมว" %}" value="{{ form.name.value|default:'' }}">
+                </div>
+                {% if form.name.errors %}
+                    <div class="form-input-error">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Upload Cat Image -->
+            <div>
+                <label for="id_image" class="block text-sm font-medium text-gray-700 mb-1">{% trans "อัพโหลดรูปแมว" %}</label>
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg file-upload-btn">
+                    <div class="space-y-1 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="flex text-sm text-gray-600">
+                            <label for="id_image" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                                <span>{% trans "เลือกไฟล์" %}</span>
+                                <input id="id_image" name="image" type="file" class="sr-only">
+                            </label>
+                            <p class="pl-1">{% trans "หรือลากและวาง" %}</p>
+                        </div>
+                        <p class="text-xs text-gray-500">PNG, JPG, GIF ไม่เกิน 10MB</p>
+                    </div>
+                </div>
+                {% if form.image.errors %}
+                    <div class="form-input-error">{{ form.image.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Additional Form Fields -->
+            <div>
+                <label for="id_breed" class="block text-sm font-medium text-gray-700 mb-1">{% trans "สายพันธุ์" %}</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="id_breed" name="breed" 
+                           class="input-field pl-10 block w-full rounded-lg shadow-sm p-3 focus:outline-none"
+                           placeholder="{% trans "กรอกสายพันธุ์" %}" value="{{ form.breed.value|default:'' }}">
+                </div>
+                {% if form.breed.errors %}
+                    <div class="form-input-error">{{ form.breed.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" 
+                    class="save-btn w-full text-white py-3 px-4 rounded-lg font-medium mt-4">
+                {% trans "เพิ่มแมว" %}
             </button>
-            <a href="{% url 'admin_dashboard' %}" class="text-blue-500 hover:underline">Cancel</a>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="{% url 'admin_dashboard' %}" 
+               class="back-link text-gray-600 font-medium hover:text-blue-600 transition-colors">
+                {% trans "กลับสู่แดชบอร์ด" %}
+            </a>
         </div>
-    </form>
+    </div>
 </body>
 </html>

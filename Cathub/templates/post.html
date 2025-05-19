@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Cat'sHUB{% endblock %}
+{% block title %}{% trans "แคทฮับ" %}{% endblock %}
 
 {% block content %}
 <!-- Heading -->
@@ -8,41 +9,41 @@
     
     <!-- Post Form -->
     <div class="container mx-auto mt-8">
-        <h3 class="text-gray-800 font-bold mb-4 text-xl">Post Your Cat</h3>
+        <h3 class="text-gray-800 font-bold mb-4 text-xl">{% trans "โพสต์แมวของคุณ" %}</h3>
         <form method="POST" enctype="multipart/form-data" class="space-y-4 bg-white shadow-md rounded-lg p-6">
             {% csrf_token %}
             <div class="form-group">
-                <label for="id_name" class="block text-gray-700">Name</label>
+                <label for="id_name" class="block text-gray-700">{% trans "ชื่อ" %}</label>
                 {{ form.name }}  <!-- ตัวเลือกชื่อแมว -->
             </div>
         
             <div class="form-group">
-                <label for="id_age_group" class="block text-gray-700">Age Group</label>
+                <label for="id_age_group" class="block text-gray-700">{% trans "ช่วงอายุ" %}</label>
                 {{ form.age_group }}  <!-- ตัวเลือกช่วงอายุ -->
             </div>
         
             <div class="form-group">
-                <label for="id_personality" class="block text-gray-700">Personality</label>
+                <label for="id_personality" class="block text-gray-700">{% trans "นิสัย" %}</label>
                 {{ form.personality }}  <!-- ตัวเลือกนิสัย -->
             </div>
         
             <div class="form-group">
-                <label for="id_breed" class="block text-gray-700">Breed</label>
+                <label for="id_breed" class="block text-gray-700">{% trans "สายพันธุ์" %}</label>
                 {{ form.breed }}  <!-- ชื่อพันธุ์ -->
             </div>
         
             <div class="form-group">
-                <label for="id_color" class="block text-gray-700">Color</label>
+                <label for="id_color" class="block text-gray-700">{% trans "สี" %}</label>
                 {{ form.color }}  <!-- สีของแมว -->
             </div>
         
             <div class="form-group">
-                <label for="id_image" class="block text-gray-700">Image</label>
-                {{ form.image }}  <!-- ฟอร์มสำหรับอัปโหลดรูปภาพ -->
+                <label for="id_image" class="block text-gray-700">{% trans "รูปภาพ" %}</label>
+                {{ form.image}}
             </div>
         
             <button type="submit" class="bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600">
-                Post
+                {% trans "โพสต์" %}
             </button>
         </form>
                

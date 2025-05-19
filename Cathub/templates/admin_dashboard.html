@@ -1,9 +1,10 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>{% trans "แดชบอร์ดแอดมิน" %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -11,26 +12,26 @@
     <!-- Sidebar -->
     <div class="w-64 bg-gradient-to-b from-[#005F73] to-[#0A9396] shadow-lg p-6 rounded-r-2xl flex flex-col justify-between min-h-screen">
         <div>
-            <h2 class="text-2xl font-bold text-white mb-6">เมนูแอดมิน</h2>
+            <h2 class="text-2xl font-bold text-white mb-6">{% trans "เมนูแอดมิน" %}</h2>
             <ul class="space-y-3">
                 <li>
                     <a href="#user-management" onclick="showSection('user-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
-                        จัดการผู้ใช้งาน
+                        {% trans "จัดการผู้ใช้งาน" %}
                     </a>
                 </li>
                 <li>
                     <a href="#cat-management" onclick="showSection('cat-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
-                        จัดการแมว
+                        {% trans "จัดการแมว" %}
                     </a>
                 </li>
                 <li>
                     <a href="#project-management" onclick="showSection('project-management')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
-                        จัดการโครงการ
+                        {% trans "จัดการโครงการ" %}
                     </a>
                 </li>
                 <li>
                     <a href="#stats-graphs" onclick="showSection('stats-graphs')" class="block py-2 px-4 text-white hover:bg-[#005F73] hover:text-[#94D2BD] rounded-xl transition duration-300">
-                        สถิติและกราฟ
+                        {% trans "สถิติและกราฟ" %}
                     </a>
                 </li>
             </ul>
@@ -39,109 +40,108 @@
         <!-- ปุ่มกลับหน้า Home ด้านล่างสุด -->
         <div class="mt-auto">
             <a href="{% url 'Home' %}" class="block text-center text-lg font-bold bg-[#EE9B00] text-white px-4 py-3 rounded-xl shadow-lg hover:bg-[#CA6702] transition duration-300">
-                กลับหน้า Home
+                {% trans "กลับหน้า Home" %}
             </a>
         </div>
     </div>
 
-
-
     <!-- Main Content -->
     <div class="flex-1 p-8">
         <!-- ปุ่มกลับไปหน้า Home -->
-        <h1 class="text-3xl font-bold text-[#005F73] mb-6">Admin Dashboard</h1>
+        <h1 class="text-3xl font-bold text-[#005F73] mb-6">{% trans "แดชบอร์ดแอดมิน" %}</h1>
 
         <!-- Summary Section -->
         <div class="grid grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-                <h3 class="text-lg font-semibold text-gray-700">แมวถูก Adopt วันนี้</h3>
+                <h3 class="text-lg font-semibold text-gray-700">{% trans "แมวถูก Adopt วันนี้" %}</h3>
                 <p class="text-3xl font-bold text-[#0A9396]">{{ adopted_cats_today }}</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-                <h3 class="text-lg font-semibold text-gray-700">ผู้ใช้งานวันนี้</h3>
+                <h3 class="text-lg font-semibold text-gray-700">{% trans "ผู้ใช้งานวันนี้" %}</h3>
                 <p class="text-3xl font-bold text-[#0A9396]">{{ users_logged_in_today }}</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-                <h3 class="text-lg font-semibold text-gray-700">แมวทั้งหมดในระบบ</h3>
+                <h3 class="text-lg font-semibold text-gray-700">{% trans "แมวทั้งหมดในระบบ" %}</h3>
                 <p class="text-3xl font-bold text-[#0A9396]">{{ total_cats_posted }}</p>
             </div>
         </div>
 
+        {% trans "คุณแน่ใจหรือไม่?" as confirm_message %}
+
         <!-- User Management -->
         <div id="user-management" class="content-section bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการผู้ใช้งาน</h2>
-            <a href="{% url 'add_user' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มผู้ใช้งาน</a>
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">{% trans "จัดการผู้ใช้งาน" %}</h2>
+            <a href="{% url 'add_user' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">{% trans "เพิ่มผู้ใช้งาน" %}</a>
             <ul class="divide-y">
                 {% for user in users %}
                 <li class="flex justify-between items-center py-2">
                     <span class="text-[#005F73]">{{ user.username }}</span>
                     <div>
-                        <a href="{% url 'edit_user' user.id %}" class="text-[#0A9396] hover:underline mr-2">แก้ไข</a>
+                        <a href="{% url 'edit_user' user.id %}" class="text-[#0A9396] hover:underline mr-2">{% trans "แก้ไข" %}</a>
                         <!-- ฟอร์มลบผู้ใช้ -->
                         <form action="{% url 'delete_user' user.id %}" method="post" style="display:inline;">
                             {% csrf_token %}
-                            <button type="submit" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</button>
+                            <button type="submit" class="text-[#E63946] hover:underline" onclick="return confirm('{{ confirm_message }}')">{% trans "ลบ" %}</button>
                         </form>
                     </div>
                 </li>
                 {% empty %}
-                <li class="text-gray-500 text-center py-2">ไม่พบผู้ใช้งาน</li>
+                <li class="text-gray-500 text-center py-2">{% trans "ไม่พบผู้ใช้งาน" %}</li>
                 {% endfor %}
             </ul>
         </div>
 
-
         <!-- Cat Management -->
         <div id="cat-management" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">
-            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการแมว</h2>
-            <a href="{% url 'add_cat' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มแมว</a>
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">{% trans "จัดการแมว" %}</h2>
+            <a href="{% url 'add_cat' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">{% trans "เพิ่มแมว" %}</a>
             <ul class="divide-y">
                 {% for cat in cats %}
                 <li class="flex justify-between items-center py-2">
                     <span class="text-[#005F73]">{{ cat.name }}</span>
                     <div>
-                        <a href="{% url 'edit_cat' cat.id %}" class="text-[#0A9396] hover:underline mr-2">แก้ไข</a>
-                        <a href="{% url 'admin_delete_cat' cat.id %}" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</a>
+                        <a href="{% url 'edit_cat' cat.id %}" class="text-[#0A9396] hover:underline mr-2">{% trans "แก้ไข" %}</a>
+                        <a href="{% url 'admin_delete_cat' cat.id %}" class="text-[#E63946] hover:underline" onclick="return confirm('{{ confirm_message }}')">{% trans "ลบ" %}</a>
                     </div>
                 </li>
                 {% empty %}
-                <li class="text-gray-500 text-center py-2">ไม่พบแมว</li>
+                <li class="text-gray-500 text-center py-2">{% trans "ไม่พบแมว" %}</li>
                 {% endfor %}
             </ul>
         </div>
 
         <!-- Project Management -->
         <div id="project-management" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">
-            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">จัดการโครงการที่น่าสนใจ</h2>
-            <a href="{% url 'admin_add_project' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">เพิ่มโครงการใหม่</a>
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">{% trans "จัดการโครงการที่น่าสนใจ" %}</h2>
+            <a href="{% url 'admin_add_project' %}" class="bg-[#0A9396] text-white px-4 py-2 rounded hover:bg-[#005F73] mb-4 inline-block">{% trans "เพิ่มโครงการใหม่" %}</a>
             <ul class="divide-y">
                 {% for project in projects %}
                 <li class="flex justify-between items-center py-2">
                     <span class="text-[#005F73]">{{ project.title }}</span>
                     <div>
-                        <a href="{% url 'admin_edit_project' project.id %}" class="text-[#0A9396] hover:underline mr-2">แก้ไข</a>
+                        <a href="{% url 'admin_edit_project' project.id %}" class="text-[#0A9396] hover:underline mr-2">{% trans "แก้ไข" %}</a>
                         <form action="{% url 'admin_delete_project' project.id %}" method="post" style="display:inline;">
                             {% csrf_token %}
-                            <button type="submit" class="text-[#E63946] hover:underline" onclick="return confirm('คุณแน่ใจหรือไม่?')">ลบ</button>
+                            <button type="submit" class="text-[#E63946] hover:underline" onclick="return confirm('{{ confirm_message }}')">{% trans "ลบ" %}</button>
                         </form>
                     </div>
                 </li>
                 {% empty %}
-                <li class="text-gray-500 text-center py-2">ไม่พบโครงการ</li>
+                <li class="text-gray-500 text-center py-2">{% trans "ไม่พบโครงการ" %}</li>
                 {% endfor %}
             </ul>
         </div>
 
         <!-- Graph Section -->
         <div id="stats-graphs" class="content-section bg-white rounded-lg shadow-lg p-6 hidden">
-            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">📊 สถิติและกราฟ</h2>
+            <h2 class="text-2xl font-semibold text-[#0A9396] mb-4">{% trans "📊 สถิติและกราฟ" %}</h2>
             <div class="grid grid-cols-2 gap-6">
                 <div class="bg-white p-4 rounded-lg shadow">
-                    <h3 class="text-lg font-semibold text-gray-700 text-center mb-2">📈 ผู้ใช้งานรายวัน (7 วันล่าสุด)</h3>
+                    <h3 class="text-lg font-semibold text-gray-700 text-center mb-2">{% trans "📈 ผู้ใช้งานรายวัน (7 วันล่าสุด)" %}</h3>
                     <canvas id="userChart" width="400" height="300"></canvas>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow">
-                    <h3 class="text-lg font-semibold text-gray-700 text-center mb-2">🐾 การ Adopt รายวัน (7 วันล่าสุด)</h3>
+                    <h3 class="text-lg font-semibold text-gray-700 text-center mb-2">{% trans "🐾 การ Adopt รายวัน (7 วันล่าสุด)" %}</h3>
                     <canvas id="adoptChart" width="400" height="300"></canvas>
                 </div>
             </div>
@@ -159,8 +159,16 @@
             });
 
             // อ่านค่าจาก JSON ที่แปลงใน Django
-            const dailyUserData = JSON.parse('{{ daily_user_data|safe }}');
-            const dailyAdoptData = JSON.parse('{{ daily_adopt_data|safe }}');
+            var dailyUserData, dailyAdoptData;
+            
+            try {
+                dailyUserData = {{ daily_user_data|safe }};
+                dailyAdoptData = {{ daily_adopt_data|safe }};
+            } catch (e) {
+                console.error("Error accessing data: ", e);
+                dailyUserData = {dates: [], counts: []};
+                dailyAdoptData = {dates: [], counts: []};
+            }
 
             // ผู้ใช้งานรายวัน (เส้น)
             new Chart(document.getElementById("userChart"), {
@@ -168,7 +176,7 @@
                 data: {
                     labels: dailyUserData.dates,
                     datasets: [{
-                        label: 'จำนวนผู้ใช้งาน',
+                        label: '{% trans "จำนวนผู้ใช้งาน" %}',
                         data: dailyUserData.counts,
                         borderColor: '#0A9396',
                         backgroundColor: 'rgba(10, 147, 150, 0.2)',
@@ -184,7 +192,7 @@
                 data: {
                     labels: dailyAdoptData.dates,
                     datasets: [{
-                        label: 'จำนวนการ Adopt',
+                        label: '{% trans "จำนวนการ Adopt" %}',
                         data: dailyAdoptData.counts,
                         backgroundColor: '#94D2BD',
                         borderColor: '#005F73',

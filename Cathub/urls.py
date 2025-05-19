@@ -43,6 +43,8 @@ urlpatterns = [
     path('admin-dashboard/projects/add/', views.AddProjectAdminView.as_view(), name='admin_add_project'),
     path('admin-dashboard/projects/edit/<int:project_id>/', views.EditProjectAdminView.as_view(), name='admin_edit_project'),
     path('admin-dashboard/projects/delete/<int:project_id>/', views.DeleteProjectAdminView.as_view(), name='admin_delete_project'),
+
+    path('set_language/', views.set_language, name='set_language'),  # URL สำหรับการเปลี่ยนภาษา
     
 
 

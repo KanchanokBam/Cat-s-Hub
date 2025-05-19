@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "Home" %}{% endblock %}
 
 {% block content %}
 <!-- Alpine.js Library -->
@@ -19,12 +21,12 @@
 
 <!-- Background Section -->
 <div class="container mx-auto text-center">
-    <h1 class="text-5xl font-extrabold text-gray-900 drop-shadow-md">ยินดีต้อนรับ, {{ user.username }}! 🐾</h1>
+    <h1 class="text-5xl font-extrabold text-gray-900 drop-shadow-md">{% trans "ยินดีต้อนรับ" %}, {{ user.username }}! 🐾</h1>
 </div>
 
 <!-- Cat Adoption Section -->
 <div class="container mx-auto mt-10 px-6">
-    <h1 class="text-5xl font-bold text-[#9B2226] mb-4">รับเลี้ยงแมว!🐱</h1>
+    <h1 class="text-5xl font-bold text-[#9B2226] mb-4">{% trans "รับเลี้ยงแมว!" %}🐱</h1>
 
     {% if cats %}
     <div x-data="scrollHandler()" x-init="init()" class="relative">
@@ -46,23 +48,22 @@
         </div>
     </div>
     {% else %}
-    <p class="text-center text-gray-500 mt-4">ไม่มีแมวสำหรับรับเลี้ยงในตอนนี้</p>
+    <p class="text-center text-gray-500 mt-4">{% trans "ไม่มีแมวสำหรับรับเลี้ยงในตอนนี้" %}</p>
     {% endif %}
 
     <div class="mt-8 text-center">
         <a href="{% url 'adopt' %}" class="bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-orange-600 transition">
-            ดูทั้งหมด
+            {% trans "ดูทั้งหมด" %}
         </a>
     </div>
 </div>
 
 <!-- Featured Projects Section -->
 <div class="container mx-auto mt-16 px-6">
-    <h2 class="text-4xl font-semibold text-left text-gray-800 mb-6">โครงการที่น่าสนใจ</h2>
+    <h2 class="text-4xl font-semibold text-left text-gray-800 mb-6">{% trans "โครงการที่น่าสนใจ" %}</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {% for project in projects %}
-        <!-- แก้ไขตรง href ให้ลิงก์ไปยังหน้ารายละเอียดภายในเว็บไซต์ -->
         <a href="{% url 'project_detail' project.id %}" class="flex flex-col items-center bg-white shadow-lg p-6 rounded-xl hover:scale-105 transition">
             {% if project.image %}
                 <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-24 h-24 object-cover rounded-full">
@@ -72,7 +73,7 @@
             <h3 class="text-lg font-semibold mt-4">{{ project.title }}</h3>
         </a>
         {% empty %}
-        <p class="text-gray-500 text-center">ยังไม่มีโครงการในขณะนี้</p>
+        <p class="text-gray-500 text-center">{% trans "ยังไม่มีโครงการในขณะนี้" %}</p>
         {% endfor %}
     </div>
 </div>

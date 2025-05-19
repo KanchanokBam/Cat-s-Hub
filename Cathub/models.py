@@ -38,7 +38,7 @@ class Cat(models.Model):
     adopted_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.name   
 
 
     
